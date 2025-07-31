@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Cinema</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
 
+        /* Glassmorphism Card */
+        .card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3);
+        }
+
+        .card h2 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Portal Effect */
+        .portal {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 100;
+            display: none;
+            opacity: 0;
+            overflow-y: auto;
+        }
+
+        .portal.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Close Button */
+        .close {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 200;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .close:hover {
+            transform: rotate(90deg) scale(1.1);
+            border-color: #667eea;
+        }
+
+        .close::before,
+        .close::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 2px;
+            background: #fff;
+        }
+
+        .close::before { transform: rotate(45deg); }
+        .close::after { transform: rotate(-45deg); }
+
+        /* Scroll Container */
+        .scroll-container {
+            height: 400vh;
+            position: relative;
+        }
+
+        .sticky-video {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.8s ease;
+        }
+
+        /* Overlay */
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        /* Text Reveal */
+        .reveal-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8) translateY(50px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            background: #0a0a0a;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .reveal-text.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .content h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #fff 0%, #667eea 50%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .highlight {
+            color: #667eea;
+        }
+
+        /* Scroll Indicator */
+        .scroll-hint {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 1;
+            transition: opacity 0.3s;
+            color: rgba(255, 255, 255, 0.5);
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="card" onclick="openPortal()">
+        <h2>Enter Experience</h2>
+        <p>Click to begin the journey</p>
+    </div>
+
+    <div class="portal" id="portal">
+        <div class="close" onclick="closePortal()"></div>
+        
+        <div class="scroll-container">
+            <div class="sticky-video">
+                <video id="video" muted playsinline>
+                    <source src="./gif/car_open-2.mp4" type="video/mp4">
+                </video>
+                
+                <div class="overlay" id="overlay"></div>
+                
+                <div class="reveal-text" id="reveal">
+                    <div class="content">
+                        <h1>Dein Projekt</h1>
+                        <p>Hier kommt dein Content rein - Text, Bilder, was du willst.</p>
+                        <p>Das Video verschwindet komplett und macht Platz für <span class="highlight">deinen Inhalt</span>.</p>
+                        
+                        <h2 style="color: #667eea; margin-top: 3rem;">Features</h2>
+                        <p>• Feature 1: Beschreibung</p>
+                        <p>• Feature 2: Beschreibung</p>
+                        <p>• Feature 3: Beschreibung</p>
+                    </div>
+                </div>
+                
+                <div class="scroll-hint" id="hint">
+                    <p>↓ Scroll ↓</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const portal = document.getElementById('portal');
+        const video = document.getElementById('video');
+        const overlay = document.getElementById('overlay');
+        const reveal = document.getElementById('reveal');
+        const hint = document.getElementById('hint');
+        let animId;
+
+        function openPortal() {
+            portal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            video.currentTime = 0;
+            video.pause();
+            video.load();
+            
+            video.addEventListener('loadeddata', function() {
+                startScrollAnimation();
+            });
+            
+            if (video.readyState >= 3) {
+                startScrollAnimation();
+            }
+        }
+
+        function closePortal() {
+            portal.classList.remove('active');
+            document.body.style.overflow = '';
+            cancelAnimationFrame(animId);
+        }
+
+        function startScrollAnimation() {
+            let current = 0;
+            
+            function update() {
+                const scrolled = portal.scrollTop;
+                const total = portal.scrollHeight - window.innerHeight;
+                const progress = Math.min(1, scrolled / total);
+                
+                // Video sync
+                if (video.duration) {
+                    const target = progress * video.duration;
+                    current += (target - current) * 0.1;
+                    video.currentTime = current;
+                }
+                
+                // Effects
+                hint.style.opacity = 1 - progress * 3;
+                
+                // Video ausfaden ab 60%
+                if (progress > 0.6) {
+                    const fadeProgress = (progress - 0.6) / 0.4;
+                    overlay.style.opacity = fadeProgress;
+                    video.style.opacity = 1 - fadeProgress;
+                } else {
+                    overlay.style.opacity = 0;
+                    video.style.opacity = 1;
+                }
+                
+                // Text einblenden ab 70%
+                if (progress > 0.7) reveal.classList.add('show');
+                else reveal.classList.remove('show');
+                
+                animId = requestAnimationFrame(update);
+            }
+            update();
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closePortal();
+        });
+    </script>
+</body>
+</html>
