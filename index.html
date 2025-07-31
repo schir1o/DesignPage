@@ -3,101 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Experience</title>
+    <title>Dario Keller - Design Portfolio</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --dark: #0a0a0a;
-            --accent: #4f46e5;
-            --text: #e2e8f0;
-            --text-dim: #64748b;
+            --bg: #050505;
+            --surface: #0a0a0a;
+            --accent: #6366f1;
+            --text: #fafafa;
+            --text-muted: #71717a;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--dark);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
             color: var(--text);
-            overflow-x: hidden;
-            line-height: 1.6;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Main Container direkt sichtbar */
+        /* Experience Container */
         .experience {
             position: fixed;
             inset: 0;
             overflow-y: auto;
+            overflow-x: hidden;
             background: #000;
+            scroll-behavior: smooth;
+            /* Haupt-Scrollbar stylen */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--accent) rgba(255, 255, 255, 0.1);
         }
 
-        /* Minimalist Close */
-        .close {
+        /* Chrome/Safari Scrollbar styling */
+        .experience::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .experience::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .experience::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .experience::-webkit-scrollbar-thumb:hover {
+            background: var(--text);
+        }
+
+        /* Elegant Close */
+        .nav {
             position: fixed;
-            top: 2rem;
-            right: 2rem;
+            top: 0;
+            right: 0;
+            padding: 2rem;
             z-index: 100;
-            width: 3rem;
-            height: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            mix-blend-mode: difference;
+        }
+
+        .close {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            transition: transform 0.6s var(--ease);
+            background: transparent;
         }
 
         .close:hover {
-            transform: scale(1.1);
-            border-color: var(--accent);
-            background: var(--accent);
+            transform: rotate(180deg) scale(1.1);
         }
 
-        .close::before,
-        .close::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 1.5px;
-            background: var(--text);
+        .close svg {
+            width: 16px;
+            height: 16px;
+            stroke: #fff;
+            stroke-width: 1.5;
         }
 
-        .close::before { transform: rotate(45deg); }
-        .close::after { transform: rotate(-45deg); }
-
-        /* Scroll Area */
+        /* Scroll Container */
         .scroll-container {
-            height: 400vh;
+            height: 500vh; /* Mehr Scroll-Raum */
         }
 
-        .video-container {
+        .video-stage {
             position: sticky;
             top: 0;
             height: 100vh;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 1.2s var(--ease);
+            transform-origin: center;
         }
 
-        /* Dark Overlay */
-        .dark-overlay {
+        /* Fade Layer */
+        .fade-layer {
             position: absolute;
             inset: 0;
-            background: var(--dark);
+            background: var(--bg);
             opacity: 0;
             pointer-events: none;
             transition: opacity 1s ease;
         }
 
-        /* Content Section */
-        .content-section {
+        /* Content Reveal */
+        .content-reveal {
             position: absolute;
             inset: 0;
             display: flex;
@@ -105,477 +131,472 @@
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.95);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--dark);
+            background: var(--bg);
             padding: 2rem;
-            overflow-y: auto;
+            transition: all 1.2s var(--ease);
         }
 
-        .content-section.active {
+        .content-reveal.show {
             opacity: 1;
             visibility: visible;
-            transform: scale(1);
         }
 
-        .content-wrapper {
+        .content {
             max-width: 1200px;
             width: 100%;
             padding: 4rem 0;
         }
 
-        /* Hero Image */
-        .hero-image {
-            width: 100%;
-            height: 400px;
-            margin-bottom: 3rem;
-            overflow: hidden;
-            border-radius: 16px;
-            opacity: 0;
-            transform: translateY(50px) scale(0.95);
-            transition: all 1s ease 0.6s;
-        }
-
-        .content-section.active .hero-image {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .hero-image:hover img {
-            transform: scale(1.05);
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            margin-bottom: 6rem;
         }
 
         /* Typography */
-        .subtitle {
-            font-size: 0.875rem;
+        .label {
+            font-size: 0.75rem;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.15em;
             color: var(--accent);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease 0.2s;
+            transform: translateY(40px);
+            transition: all 1s var(--ease);
         }
 
-        .content-section.active .subtitle {
+        .content-reveal.show .label {
             opacity: 1;
             transform: translateY(0);
+            transition-delay: 0.2s;
         }
 
         h1 {
-            font-size: clamp(3rem, 7vw, 5rem);
-            font-weight: 700;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 300;
             line-height: 1.1;
-            margin-bottom: 2rem;
             letter-spacing: -0.02em;
+            margin-bottom: 2rem;
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease 0.3s;
+            transform: translateY(60px) scale(0.95);
+            transition: all 1.2s var(--ease);
         }
 
-        .content-section.active h1 {
+        .content-reveal.show h1 {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+            transition-delay: 0.3s;
         }
 
-        .accent-text {
-            background: linear-gradient(90deg, var(--text) 0%, var(--accent) 100%);
+        h1 strong {
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .lead {
-            font-size: 1.25rem;
-            color: var(--text-dim);
+        .description {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-muted);
             margin-bottom: 3rem;
-            max-width: 700px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease 0.4s;
-        }
-
-        .content-section.active .lead {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Two Column Layout */
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            margin: 4rem 0;
-            align-items: center;
             opacity: 0;
             transform: translateY(40px);
-            transition: all 0.8s ease 0.7s;
+            transition: all 1s var(--ease);
         }
 
-        .content-section.active .two-column {
+        .content-reveal.show .description {
             opacity: 1;
             transform: translateY(0);
+            transition-delay: 0.4s;
         }
 
-        .column-image {
-            width: 100%;
-            height: 300px;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .column-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.5s ease;
-        }
-
-        .column-image:hover img {
-            transform: scale(1.1) rotate(1deg);
-        }
-
-        .column-text h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .column-text p {
-            color: var(--text-dim);
-            line-height: 1.8;
-        }
-
-        /* Grid Layout with Images */
-        .grid {
+        /* Stats Grid */
+        .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s ease 0.5s;
+            transform: translateY(40px) scale(0.95);
+            transition: all 1.2s var(--ease);
         }
 
-        .content-section.active .grid {
+        .content-reveal.show .stats {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+            transition-delay: 0.5s;
         }
 
-        .card {
+        .content-reveal.show .stats {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transition-delay: 0.5s;
+        }
+
+        .stat {
+            padding: 1.5rem;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            overflow: hidden;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
-        .card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(79, 70, 229, 0.3);
-            transform: translateY(-4px);
+        .stat:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
         }
 
-        .card-image {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
         }
 
-        .card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* CTA Button */
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s var(--ease);
+        }
+
+        .content-reveal.show .cta {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.6s;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .cta svg {
+            width: 16px;
+            height: 16px;
             transition: transform 0.3s ease;
         }
 
-        .card:hover .card-image img {
-            transform: scale(1.1);
+        .cta:hover svg {
+            transform: translateX(4px);
         }
 
-        .card-content {
-            padding: 2rem;
-        }
-
-        .card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .card p {
-            color: var(--text-dim);
-        }
-
-        /* Gallery Section */
-        .gallery {
-            margin: 4rem 0;
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s ease 0.8s;
-        }
-
-        .content-section.active .gallery {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .gallery h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .gallery-item {
-            aspect-ratio: 1;
-            overflow: hidden;
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: all 0.4s ease;
-        }
-
-        .gallery-item::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .gallery-item:hover::after {
-            opacity: 1;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        /* Progress Indicator */
-        .progress {
+        /* Progress */
+        .progress-line {
             position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
+            bottom: 0;
+            left: 0;
+            right: 0;
             height: 2px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 1px;
-            overflow: hidden;
+            z-index: 100;
             opacity: 1;
             transition: opacity 0.3s ease;
         }
 
-        .progress.hide {
+        .progress-line.hide {
             opacity: 0;
         }
 
-        .progress-bar {
+        .progress-fill {
             height: 100%;
-            background: var(--accent);
             width: 0%;
-            transition: width 0.1s ease;
+            background: var(--accent);
+            transition: width 0.1s linear;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .close { top: 1rem; right: 1rem; }
-            h1 { font-size: clamp(2rem, 10vw, 3rem); }
-            .grid { grid-template-columns: 1fr; gap: 1.5rem; }
-            .two-column { 
-                grid-template-columns: 1fr; 
-                gap: 2rem;
+        /* Animations */
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+        }
+
+        /* Stat Animation */
+        .stat {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .content-reveal.show .stat {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s var(--ease);
+        }
+
+        .content-reveal.show .stat:nth-child(1) { transition-delay: 0.55s; }
+        .content-reveal.show .stat:nth-child(2) { transition-delay: 0.65s; }
+        .content-reveal.show .stat:nth-child(3) { transition-delay: 0.75s; }
+        .content-reveal.show .stat:nth-child(4) { transition-delay: 0.85s; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav { padding: 1.5rem; }
+            .content { 
+                grid-template-columns: 1fr; 
+                gap: 3rem;
+                text-align: center;
+            }
+            .stats { 
+                grid-template-columns: 1fr;
+                max-width: 300px;
+                margin: 0 auto;
             }
         }
     </style>
 </head>
 <body>
     <div class="experience" id="experience">
-        <div class="close" onclick="window.location.reload()"></div>
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="close" onclick="window.location.href='index.html'" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor"/>
+                </svg>
+            </button>
+        </nav>
         
         <div class="scroll-container">
-            <div class="video-container">
-                <video id="video" muted playsinline autoplay>
-                    <source src="./video/car_open-2.mp4" type="video/mp4">
+            <div class="video-stage">
+                <video id="video" muted playsinline>
+                    <source src="./gif/car_open-2.mp4" type="video/mp4">
                 </video>
                 
-                <div class="dark-overlay" id="overlay"></div>
+                <div class="fade-layer" id="fadeLayer"></div>
                 
-                <div class="content-section" id="content">
-                    <div class="content-wrapper">
-                        <!-- Hero Image -->
-                        <div class="hero-image">
-                            <img src="https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=1200&q=80" alt="Futuristic Car Design">
+                <div class="content-reveal" id="contentReveal">
+                    <div class="content">
+                        <div class="main-content">
+                            <p class="label">Automotive Excellence</p>
+                            <h1>
+                                Die Zukunft der<br>
+                                <strong>Mobilität</strong>
+                            </h1>
+                            <p class="description">
+                                Ein visionäres Fahrzeugkonzept, das nachhaltige Technologie 
+                                mit zeitlosem Design vereint. Entwickelt für eine neue Ära 
+                                der autonomen Mobilität.
+                            </p>
                         </div>
-
-                        <p class="subtitle">Automotive Design</p>
-                        <h1>
-                            Die Zukunft der<br>
-                            <span class="accent-text">Mobilität gestalten</span>
-                        </h1>
-                        <p class="lead">
-                            Innovative Fahrzeugkonzepte, die Technologie und Design 
-                            in perfekter Harmonie vereinen. Entdecken Sie visionäre 
-                            Lösungen für die Mobilität von morgen.
-                        </p>
                         
-                        <!-- Cards mit Bildern -->
-                        <div class="grid">
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" alt="Autonomous Driving">
+                        <!-- Image Slider -->
+                        <div class="slider-container">
+                            <div class="slider-wrapper" id="sliderWrapper">
+                                <div class="slide">
+                                    <img src="./images/sketch-1.png" alt="Concept Design">
                                 </div>
-                                <div class="card-content">
-                                    <h3>Autonomes Fahren</h3>
-                                    <p>Level 4 Autonomie mit intuitiver Mensch-Maschine-Interaktion</p>
+                                <div class="slide">
+                                    <img src="./images/sketch-2.png" alt="Technical Drawing">
+                                </div>
+                                <div class="slide">
+                                    <img src="./images/render-1.jpg" alt="3D Visualization">
+                                </div>
+                                <div class="slide">
+                                    <img src="./images/interior.jpg" alt="Interior Concept">
+                                </div>
+                                <div class="slide">
+                                    <img src="./images/detail.jpg" alt="Design Details">
+                                </div>
+                                <div class="slide">
+                                    <img src="./images/final.jpg" alt="Final Render">
                                 </div>
                             </div>
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Sustainable Materials">
-                                </div>
-                                <div class="card-content">
-                                    <h3>Nachhaltige Materialien</h3>
-                                    <p>Recycelte und biologisch abbaubare Komponenten</p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="https://images.unsplash.com/photo-1611016186353-9af58c69a533?w=800&q=80" alt="Digital Experience">
-                                </div>
-                                <div class="card-content">
-                                    <h3>Digital Experience</h3>
-                                    <p>Nahtlose Integration von digitalen Services</p>
-                                </div>
+                            
+                            <!-- Navigation -->
+                            <button class="slider-nav prev" onclick="changeSlide(-1)">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <button class="slider-nav next" onclick="changeSlide(1)">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Dots -->
+                            <div class="slider-controls">
+                                <span class="dot active" onclick="goToSlide(0)"></span>
+                                <span class="dot" onclick="goToSlide(1)"></span>
+                                <span class="dot" onclick="goToSlide(2)"></span>
+                                <span class="dot" onclick="goToSlide(3)"></span>
+                                <span class="dot" onclick="goToSlide(4)"></span>
+                                <span class="dot" onclick="goToSlide(5)"></span>
                             </div>
                         </div>
-
-                        <!-- Two Column Section -->
-                        <div class="two-column">
-                            <div class="column-text">
-                                <h2>Visionäres Design</h2>
-                                <p>
-                                    Unsere Designphilosophie verbindet ästhetische Exzellenz mit 
-                                    funktionaler Innovation. Jede Linie, jede Kurve ist durchdacht 
-                                    und trägt zur Gesamtperformance des Fahrzeugs bei.
-                                </p>
+                        
+                        <!-- Minimale Stats -->
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-value">L4</div>
+                                <div class="stat-label">Autonomie</div>
                             </div>
-                            <div class="column-image">
-                                <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80" alt="Car Interior Design">
+                            <div class="stat-item">
+                                <div class="stat-value">95%</div>
+                                <div class="stat-label">Nachhaltig</div>
                             </div>
-                        </div>
-
-                        <!-- Gallery Section -->
-                        <div class="gallery">
-                            <h2>Design Gallery</h2>
-                            <div class="gallery-grid">
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=600&q=80" alt="Gallery 1">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80" alt="Gallery 2">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&q=80" alt="Gallery 3">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&q=80" alt="Gallery 4">
-                                </div>
+                            <div class="stat-item">
+                                <div class="stat-value">2025</div>
+                                <div class="stat-label">Launch</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="progress" id="progress">
-                    <div class="progress-bar" id="progressBar"></div>
-                </div>
             </div>
+        </div>
+        
+        <!-- Progress -->
+        <div class="progress-line" id="progressLine">
+            <div class="progress-fill" id="progressFill"></div>
         </div>
     </div>
 
     <script>
         const experience = document.getElementById('experience');
         const video = document.getElementById('video');
-        const overlay = document.getElementById('overlay');
-        const content = document.getElementById('content');
-        const progress = document.getElementById('progress');
-        const progressBar = document.getElementById('progressBar');
+        const fadeLayer = document.getElementById('fadeLayer');
+        const contentReveal = document.getElementById('contentReveal');
+        const progressLine = document.getElementById('progressLine');
+        const progressFill = document.getElementById('progressFill');
         
         let currentTime = 0;
-        let animId;
+        let animFrame;
 
-        // Auto-start on load
-        window.addEventListener('load', () => {
-            video.currentTime = 0;
-            video.pause();
-            initAnimation();
+        // Initialize
+        video.currentTime = 0;
+        video.pause();
+        
+        video.addEventListener('loadedmetadata', () => {
+            startAnimation();
         });
 
-        function initAnimation() {
-            function update() {
+        function startAnimation() {
+            function render() {
                 const scrolled = experience.scrollTop;
                 const total = experience.scrollHeight - window.innerHeight;
-                const scrollProgress = Math.min(1, scrolled / total);
+                const progress = Math.min(1, scrolled / total);
                 
-                // Update progress bar
-                progressBar.style.width = `${scrollProgress * 100}%`;
+                // Progress bar
+                progressFill.style.width = `${progress * 100}%`;
                 
-                // Sync video with scroll
+                // Video sync
                 if (video.duration) {
-                    const targetTime = scrollProgress * video.duration;
-                    currentTime += (targetTime - currentTime) * 0.12;
+                    const target = progress * video.duration;
+                    currentTime += (target - currentTime) * 0.1;
                     video.currentTime = currentTime;
                 }
                 
-                // Fade out video, fade in content
-                if (scrollProgress > 0.5) {
-                    const fadeProgress = (scrollProgress - 0.5) * 2;
-                    overlay.style.opacity = fadeProgress * 0.95;
-                    video.style.transform = `scale(${1 + fadeProgress * 0.1})`;
+                // Transitions
+                if (progress > 0.5) {
+                    const fade = (progress - 0.5) * 2;
+                    fadeLayer.style.opacity = fade;
+                    video.style.transform = `scale(${1 + fade * 0.15})`;
                     
-                    if (scrollProgress > 0.65) {
-                        content.classList.add('active');
-                        progress.classList.add('hide');
+                    if (progress > 0.65) {
+                        contentReveal.classList.add('show');
+                        progressLine.classList.add('hide');
                     } else {
-                        content.classList.remove('active');
-                        progress.classList.remove('hide');
+                        contentReveal.classList.remove('show');
+                        progressLine.classList.remove('hide');
                     }
                 } else {
-                    overlay.style.opacity = 0;
+                    fadeLayer.style.opacity = 0;
                     video.style.transform = 'scale(1)';
-                    content.classList.remove('active');
-                    progress.classList.remove('hide');
+                    contentReveal.classList.remove('show');
+                    progressLine.classList.remove('hide');
                 }
                 
-                animId = requestAnimationFrame(update);
+                // Debug log
+                if (progress > 0.6) {
+                    console.log('Progress:', progress, 'Content should be visible');
+                }
+                
+                animFrame = requestAnimationFrame(render);
             }
-            update();
+            render();
         }
 
-        // Clean animations on unload
+        // Cleanup
         window.addEventListener('beforeunload', () => {
-            if (animId) cancelAnimationFrame(animId);
+            if (animFrame) cancelAnimationFrame(animFrame);
         });
+
+        // Slider functionality
+        let currentSlide = 0;
+        const slides = 6;
+
+        function updateSlider() {
+            const wrapper = document.getElementById('sliderWrapper');
+            wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = slides - 1;
+            if (currentSlide >= slides) currentSlide = 0;
+            updateSlider();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlider();
+        }
+
+        // Touch/Swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        if (sliderWrapper) {
+            sliderWrapper.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            sliderWrapper.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+        }
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) changeSlide(1);  // Swipe left
+            if (touchEndX > touchStartX + 50) changeSlide(-1); // Swipe right
+        }
     </script>
 </body>
 </html>
