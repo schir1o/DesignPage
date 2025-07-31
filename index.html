@@ -485,6 +485,156 @@
             box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
         }
 
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--easing);
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            transform: scale(0.8) translateY(50px);
+            transition: transform 0.5s var(--easing-out);
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            background: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        .lightbox-close::before,
+        .lightbox-close::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            background: white;
+        }
+
+        .lightbox-close::before { transform: rotate(45deg); }
+        .lightbox-close::after { transform: rotate(-45deg); }
+
+        /* Navigation arrows */
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .lightbox-nav:hover {
+            background: var(--accent);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        /* Image counter */
+        .lightbox-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.875rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Clickable images styling */
+        .clickable-image {
+            cursor: zoom-in;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clickable-image::before {
+            content: '🔍';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 2rem;
+            background: rgba(0, 0, 0, 0.7);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s var(--easing);
+            pointer-events: none;
+        }
+
+        .clickable-image:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .close { top: 1rem; right: 1rem; }
@@ -496,6 +646,14 @@
             }
             .gallery-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            .lightbox-close {
+                top: 20px;
+                right: 20px;
+            }
+            .lightbox-nav {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -525,7 +683,7 @@
         <div class="content-section" id="content">
             <div class="content-wrapper">
                 <!-- Hero Image -->
-                <div class="hero-image">
+                <div class="hero-image clickable-image" onclick="openLightbox('./images/image1.png', 0)">
                     <img src="./images/image1.png" alt="Futuristic Car Design">
                 </div>
 
@@ -543,7 +701,7 @@
                 <!-- Cards mit Bildern -->
                 <div class="grid">
                     <div class="card">
-                        <div class="card-image">
+                        <div class="card-image clickable-image" onclick="openLightbox('./images/image2.png', 1)">
                             <img src="./images/image2.png" alt="Autonomous Driving">
                         </div>
                         <div class="card-content">
@@ -552,7 +710,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-image">
+                        <div class="card-image clickable-image" onclick="openLightbox('./images/image3.png', 2)">
                             <img src="./images/image3.png" alt="Sustainable Materials">
                         </div>
                         <div class="card-content">
@@ -561,7 +719,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-image">
+                        <div class="card-image clickable-image" onclick="openLightbox('./images/image4.png', 3)">
                             <img src="./images/image4.png" alt="Digital Experience">
                         </div>
                         <div class="card-content">
@@ -581,7 +739,7 @@
                             und trägt zur Gesamtperformance des Fahrzeugs bei.
                         </p>
                     </div>
-                    <div class="column-image">
+                    <div class="column-image clickable-image" onclick="openLightbox('./images/image5.png', 4)">
                         <img src="./images/image5.png" alt="Car Interior Design">
                     </div>
                 </div>
@@ -590,16 +748,16 @@
                 <div class="gallery">
                     <h2>Design Gallery</h2>
                     <div class="gallery-grid">
-                        <div class="gallery-item">
+                        <div class="gallery-item clickable-image" onclick="openLightbox('./images/image4.png', 5)">
                             <img src="./images/image4.png" alt="Gallery 1">
                         </div>
-                        <div class="gallery-item">
+                        <div class="gallery-item clickable-image" onclick="openLightbox('./images/image5.png', 6)">
                             <img src="./images/image5.png" alt="Gallery 2">
                         </div>
-                        <div class="gallery-item">
+                        <div class="gallery-item clickable-image" onclick="openLightbox('./images/image6.png', 7)">
                             <img src="./images/image6.png" alt="Gallery 3">
                         </div>
-                        <div class="gallery-item">
+                        <div class="gallery-item clickable-image" onclick="openLightbox('./images/image7.png', 8)">
                             <img src="./images/image7.png" alt="Gallery 4">
                         </div>
                     </div>
@@ -609,6 +767,19 @@
         
         <div class="progress" id="progress">
             <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Lightbox -->
+        <div class="lightbox" id="lightbox">
+            <div class="lightbox-content">
+                <img src="" alt="" class="lightbox-image" id="lightboxImage">
+                <div class="lightbox-close" onclick="closeLightbox()"></div>
+                <div class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">‹</div>
+                <div class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">›</div>
+                <div class="lightbox-counter">
+                    <span id="currentImage">1</span> / <span id="totalImages">9</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -762,6 +933,70 @@
         window.addEventListener('beforeunload', () => {
             if (animId) cancelAnimationFrame(animId);
         });
+
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const currentImageSpan = document.getElementById('currentImage');
+        const totalImagesSpan = document.getElementById('totalImages');
+        
+        const allImages = [
+            './images/image1.png',
+            './images/image2.png',
+            './images/image3.png',
+            './images/image4.png',
+            './images/image5.png',
+            './images/image4.png',
+            './images/image5.png',
+            './images/image6.png',
+            './images/image7.png'
+        ];
+        
+        let currentImageIndex = 0;
+        
+        function openLightbox(imageSrc, index) {
+            currentImageIndex = index;
+            lightboxImage.src = imageSrc;
+            lightbox.classList.add('active');
+            currentImageSpan.textContent = index + 1;
+            totalImagesSpan.textContent = allImages.length;
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function navigateLightbox(direction) {
+            currentImageIndex = (currentImageIndex + direction + allImages.length) % allImages.length;
+            lightboxImage.style.opacity = '0';
+            lightboxImage.style.transform = `scale(0.9) translateX(${direction * 50}px)`;
+            
+            setTimeout(() => {
+                lightboxImage.src = allImages[currentImageIndex];
+                currentImageSpan.textContent = currentImageIndex + 1;
+                lightboxImage.style.opacity = '1';
+                lightboxImage.style.transform = 'scale(1) translateX(0)';
+            }, 200);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                if (e.key === 'ArrowRight') navigateLightbox(1);
+            }
+        });
+        
+        // Close lightbox on background click
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        
+        // Add transition to lightbox image
+        lightboxImage.style.transition = 'all 0.3s ease';
     </script>
 </body>
 </html>
