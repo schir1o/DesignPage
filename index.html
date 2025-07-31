@@ -29,11 +29,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Ensure we start at top */
-        html, body {
-            scroll-behavior: auto !important;
-        }
-
         /* Global Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -65,7 +60,6 @@
             position: relative;
             min-height: 100vh;
             background: #000;
-            overflow-x: hidden;
         }
 
         /* Close Button */
@@ -133,40 +127,6 @@
             height: 100%;
             object-fit: cover;
             will-change: transform, filter, opacity;
-            pointer-events: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        /* Hide all video controls */
-        video::-webkit-media-controls {
-            display: none !important;
-        }
-        
-        video::-webkit-media-controls-enclosure {
-            display: none !important;
-        }
-        
-        video::-webkit-media-controls-panel {
-            display: none !important;
-        }
-        
-        video::-webkit-media-controls-play-button {
-            display: none !important;
-        }
-        
-        video::-moz-media-controls {
-            display: none !important;
-        }
-        
-        video::--webkit-media-controls-play-button {
-            display: none !important;
-        }
-        
-        video::-webkit-media-controls-start-playback-button {
-            display: none !important;
         }
 
         /* Multiple overlay layers for smoother transition */
@@ -559,10 +519,6 @@
             }
         }
     </style>
-    <script>
-        // Force scroll to top immediately
-        window.scrollTo(0, 0);
-    </script>
 </head>
 <body>
     <div class="experience" id="experience">
@@ -572,7 +528,7 @@
         <div class="video-section">
             <div class="video-container">
                 <div class="video-wrapper">
-                    <video id="video" muted playsinline autoplay controls="false">
+                    <video id="video" muted playsinline autoplay>
                         <source src="./video/car_open-2.mp4" type="video/mp4">
                     </video>
                     
@@ -703,27 +659,11 @@
             }
         };
 
-        // Force scroll to top on page load/reload
-        window.history.scrollRestoration = 'manual';
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-
         // Auto-start on load
         window.addEventListener('load', () => {
-            // Ensure we're at the top even after load
-            window.scrollTo(0, 0);
             video.currentTime = 0;
             video.pause();
-            // Remove controls programmatically
-            video.controls = false;
-            video.removeAttribute('controls');
             initAnimation();
-        });
-
-        // Also force scroll to top before unload
-        window.addEventListener('beforeunload', () => {
-            window.scrollTo(0, 0);
         });
 
         function initAnimation() {
