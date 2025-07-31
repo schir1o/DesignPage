@@ -109,6 +109,7 @@
             transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--dark);
             padding: 2rem;
+            overflow-y: auto;
         }
 
         .content-section.active {
@@ -118,8 +119,37 @@
         }
 
         .content-wrapper {
-            max-width: 1000px;
+            max-width: 1200px;
             width: 100%;
+            padding: 4rem 0;
+        }
+
+        /* Hero Image */
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            border-radius: 16px;
+            opacity: 0;
+            transform: translateY(50px) scale(0.95);
+            transition: all 1s ease 0.6s;
+        }
+
+        .content-section.active .hero-image {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .hero-image:hover img {
+            transform: scale(1.05);
         }
 
         /* Typography */
@@ -176,10 +206,56 @@
             transform: translateY(0);
         }
 
-        /* Grid Layout */
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin: 4rem 0;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease 0.7s;
+        }
+
+        .content-section.active .two-column {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .column-image {
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .column-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .column-image:hover img {
+            transform: scale(1.1) rotate(1deg);
+        }
+
+        .column-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .column-text p {
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        /* Grid Layout with Images */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 4rem;
             opacity: 0;
@@ -196,7 +272,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            padding: 2rem;
+            overflow: hidden;
             transition: all 0.3s ease;
         }
 
@@ -206,6 +282,27 @@
             transform: translateY(-4px);
         }
 
+        .card-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
         .card h3 {
             font-size: 1.25rem;
             margin-bottom: 0.5rem;
@@ -213,6 +310,62 @@
 
         .card p {
             color: var(--text-dim);
+        }
+
+        /* Gallery Section */
+        .gallery {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease 0.8s;
+        }
+
+        .content-section.active .gallery {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
         }
 
         /* Progress Indicator */
@@ -246,6 +399,13 @@
             .close { top: 1rem; right: 1rem; }
             h1 { font-size: clamp(2rem, 10vw, 3rem); }
             .grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .two-column { 
+                grid-template-columns: 1fr; 
+                gap: 2rem;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -263,6 +423,11 @@
                 
                 <div class="content-section" id="content">
                     <div class="content-wrapper">
+                        <!-- Hero Image -->
+                        <div class="hero-image">
+                            <img src="https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=1200&q=80" alt="Futuristic Car Design">
+                        </div>
+
                         <p class="subtitle">Automotive Design</p>
                         <h1>
                             Die Zukunft der<br>
@@ -274,18 +439,68 @@
                             Lösungen für die Mobilität von morgen.
                         </p>
                         
+                        <!-- Cards mit Bildern -->
                         <div class="grid">
                             <div class="card">
-                                <h3>Autonomes Fahren</h3>
-                                <p>Level 4 Autonomie mit intuitiver Mensch-Maschine-Interaktion</p>
+                                <div class="card-image">
+                                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" alt="Autonomous Driving">
+                                </div>
+                                <div class="card-content">
+                                    <h3>Autonomes Fahren</h3>
+                                    <p>Level 4 Autonomie mit intuitiver Mensch-Maschine-Interaktion</p>
+                                </div>
                             </div>
                             <div class="card">
-                                <h3>Nachhaltige Materialien</h3>
-                                <p>Recycelte und biologisch abbaubare Komponenten</p>
+                                <div class="card-image">
+                                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Sustainable Materials">
+                                </div>
+                                <div class="card-content">
+                                    <h3>Nachhaltige Materialien</h3>
+                                    <p>Recycelte und biologisch abbaubare Komponenten</p>
+                                </div>
                             </div>
                             <div class="card">
-                                <h3>Digital Experience</h3>
-                                <p>Nahtlose Integration von digitalen Services</p>
+                                <div class="card-image">
+                                    <img src="https://images.unsplash.com/photo-1611016186353-9af58c69a533?w=800&q=80" alt="Digital Experience">
+                                </div>
+                                <div class="card-content">
+                                    <h3>Digital Experience</h3>
+                                    <p>Nahtlose Integration von digitalen Services</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Two Column Section -->
+                        <div class="two-column">
+                            <div class="column-text">
+                                <h2>Visionäres Design</h2>
+                                <p>
+                                    Unsere Designphilosophie verbindet ästhetische Exzellenz mit 
+                                    funktionaler Innovation. Jede Linie, jede Kurve ist durchdacht 
+                                    und trägt zur Gesamtperformance des Fahrzeugs bei.
+                                </p>
+                            </div>
+                            <div class="column-image">
+                                <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80" alt="Car Interior Design">
+                            </div>
+                        </div>
+
+                        <!-- Gallery Section -->
+                        <div class="gallery">
+                            <h2>Design Gallery</h2>
+                            <div class="gallery-grid">
+                                <div class="gallery-item">
+                                    <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=600&q=80" alt="Gallery 1">
+                                </div>
+                                <div class="gallery-item">
+                                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80" alt="Gallery 2">
+                                </div>
+                                <div class="gallery-item">
+                                    <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&q=80" alt="Gallery 3">
+                                </div>
+                                <div class="gallery-item">
+                                    <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&q=80" alt="Gallery 4">
+                                </div>
                             </div>
                         </div>
                     </div>
