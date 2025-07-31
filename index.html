@@ -566,19 +566,23 @@
                 // Update progress bar
                 progressBar.style.width = `${scrollProgress * 100}%`;
                 
-                // Video playback section (first 60% of scroll)
-                if (scrollProgress <= 0.6) {
-                    const videoProgress = scrollProgress / 0.6;
+                // Video playback section (first 70% of scroll)
+                if (scrollProgress <= 0.7) {
+                    const videoProgress = scrollProgress / 0.7;
                     if (video.duration) {
                         const targetTime = videoProgress * video.duration;
                         currentTime += (targetTime - currentTime) * 0.08;
                         video.currentTime = currentTime;
                     }
+                    // Reset any morph effects
+                    overlay.style.opacity = 0;
+                    video.style.transform = 'scale(1) translateY(0)';
+                    content.classList.remove('active');
                 }
                 
-                // Morph transition (40% to 100% of scroll)
-                if (scrollProgress > 0.4) {
-                    const morphProgress = Math.min(1, (scrollProgress - 0.4) / 0.6);
+                // Morph transition (70% to 100% of scroll)
+                if (scrollProgress > 0.7) {
+                    const morphProgress = Math.min(1, (scrollProgress - 0.7) / 0.3);
                     
                     // Fade overlay
                     overlay.style.opacity = morphProgress * 0.95;
@@ -591,8 +595,6 @@
                     // Activate content
                     if (morphProgress > 0.2) {
                         content.classList.add('active');
-                    } else {
-                        content.classList.remove('active');
                     }
                     
                     // Hide progress bar at end
@@ -602,10 +604,7 @@
                         progress.classList.remove('hide');
                     }
                 } else {
-                    // Reset states
-                    overlay.style.opacity = 0;
-                    video.style.transform = 'scale(1) translateY(0)';
-                    content.classList.remove('active');
+                    // Progress bar visible during video
                     progress.classList.remove('hide');
                 }
                 
