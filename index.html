@@ -55,10 +55,9 @@
             scrollbar-color: var(--accent) rgba(255, 255, 255, 0.1);
         }
 
-        /* Main Container */
+        /* Main Container - WICHTIG: Kein overflow hidden hier! */
         .experience {
             position: relative;
-            min-height: 100vh;
             background: #000;
         }
 
@@ -100,15 +99,17 @@
         .close::before { transform: rotate(45deg); }
         .close::after { transform: rotate(-45deg); }
 
-        /* Video Section */
+        /* Video Section - Angepasst für einheitlichen Scroll */
         .video-section {
-            height: 400vh;
+            height: 100vh;
             position: relative;
         }
 
         .video-container {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             height: 100vh;
             overflow: hidden;
             z-index: 1;
@@ -152,40 +153,19 @@
             will-change: opacity;
         }
 
-        /* Content Section */
+        /* Content Section - WICHTIG: Nicht mehr fixed, sondern relative */
         .content-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100vh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
+            position: relative;
+            min-height: 100vh;
             background: var(--dark);
             z-index: 2;
-            transform: translateY(100vh);
-            will-change: transform;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        /* Smoother gradient edge */
-        .content-section::before {
-            content: '';
-            position: absolute;
-            top: -300px;
-            left: 0;
-            right: 0;
-            height: 300px;
-            background: linear-gradient(to top, var(--dark) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 1;
+            padding-top: 100vh; /* Platz für Video-Animation */
         }
 
         .content-wrapper {
             max-width: 1200px;
             width: 100%;
+            margin: 0 auto;
             padding: 6rem 2rem 4rem;
             opacity: 0;
             transform: translateY(40px);
@@ -524,23 +504,24 @@
     <div class="experience" id="experience">
         <div class="close" onclick="window.location.reload()"></div>
         
-        <!-- Video Section -->
-        <div class="video-section">
-            <div class="video-container">
-                <div class="video-wrapper">
-                    <video id="video" muted playsinline autoplay>
-                        <source src="./video/car_open-2.mp4" type="video/mp4">
-                    </video>
-                    
-                    <div class="overlay-container">
-                        <div class="gradient-overlay" id="gradientOverlay"></div>
-                        <div class="dark-overlay" id="overlay"></div>
-                    </div>
+        <!-- Video Container bleibt fixed -->
+        <div class="video-container">
+            <div class="video-wrapper">
+                <video id="video" muted playsinline autoplay>
+                    <source src="./video/car_open-2.mp4" type="video/mp4">
+                </video>
+                
+                <div class="overlay-container">
+                    <div class="gradient-overlay" id="gradientOverlay"></div>
+                    <div class="dark-overlay" id="overlay"></div>
                 </div>
             </div>
         </div>
         
-        <!-- Content Section -->
+        <!-- Spacer für Video-Animation -->
+        <div class="video-section"></div>
+        
+        <!-- Content Section - jetzt Teil des normalen Document Flow -->
         <div class="content-section" id="content">
             <div class="content-wrapper">
                 <!-- Hero Image -->
@@ -638,11 +619,9 @@
         const content = document.getElementById('content');
         const progress = document.getElementById('progress');
         const progressBar = document.getElementById('progressBar');
-        const videoSection = document.querySelector('.video-section');
         const videoWrapper = document.querySelector('.video-wrapper');
         const videoContainer = document.querySelector('.video-container');
         
-        let currentTime = 0;
         let animId;
         let lastScrollY = 0;
         let scrollVelocity = 0;
@@ -669,60 +648,51 @@
         function initAnimation() {
             let smoothScrollProgress = 0;
             let smoothVideoTime = 0;
-            let smoothContentY = 100;
             let smoothVideoScale = 1;
             let smoothOverlayOpacity = 0;
             let smoothGradientOpacity = 0;
 
+            const windowHeight = window.innerHeight;
+            const totalScrollHeight = document.documentElement.scrollHeight - windowHeight;
+
             function update() {
                 const scrolled = window.pageYOffset;
-                const videoSectionHeight = videoSection.offsetHeight;
-                const windowHeight = window.innerHeight;
-                const maxScroll = videoSectionHeight - windowHeight;
                 
                 // Calculate scroll velocity for dynamic effects
                 scrollVelocity = scrolled - lastScrollY;
                 lastScrollY = scrolled;
                 
-                // Calculate raw scroll progress
-                const rawScrollProgress = Math.min(1, scrolled / maxScroll);
+                // Video phase: First viewport height of scroll
+                const videoPhaseProgress = Math.min(1, scrolled / windowHeight);
                 
-                // Smooth scroll progress
-                smoothScrollProgress += (rawScrollProgress - smoothScrollProgress) * 0.1;
+                // Content phase: Everything after first viewport
+                const contentPhaseProgress = Math.max(0, (scrolled - windowHeight * 0.5) / (windowHeight * 0.5));
                 
-                // Update progress bar with spring effect
-                const springProgress = easings.spring(smoothScrollProgress);
-                progressBar.style.width = `${springProgress * 100}%`;
+                // Smooth transitions
+                smoothScrollProgress += (videoPhaseProgress - smoothScrollProgress) * 0.1;
                 
-                // Define transition phases
-                const videoPhase = Math.min(1, smoothScrollProgress / 0.65);
-                const morphPhase = Math.max(0, (smoothScrollProgress - 0.65) / 0.35);
+                // Update progress bar
+                const totalProgress = scrolled / totalScrollHeight;
+                progressBar.style.width = `${totalProgress * 100}%`;
                 
-                // Video playback (0% to 65% of scroll)
-                if (video.duration && videoPhase < 1) {
-                    const targetTime = videoPhase * video.duration;
+                // Video playback (0 to 100vh of scroll)
+                if (video.duration && videoPhaseProgress < 1) {
+                    const targetTime = videoPhaseProgress * video.duration;
                     smoothVideoTime += (targetTime - smoothVideoTime) * 0.12;
                     video.currentTime = smoothVideoTime;
                 }
                 
-                // Morph transition (65% to 100% of scroll)
-                if (morphPhase > 0) {
-                    // Use different easing for different properties
-                    const scaleProgress = easings.easeOutExpo(morphPhase);
-                    const contentProgress = easings.easeOutQuart(morphPhase);
-                    const overlayProgress = easings.easeInOutQuart(morphPhase);
+                // Content appearance and video fade
+                if (contentPhaseProgress > 0) {
+                    // Video transforms
+                    const scaleProgress = easings.easeOutExpo(contentPhaseProgress);
+                    const overlayProgress = easings.easeInOutQuart(contentPhaseProgress);
                     
-                    // Content slides up with smooth acceleration
-                    const targetContentY = 100 - (contentProgress * 100);
-                    smoothContentY += (targetContentY - smoothContentY) * 0.15;
-                    content.style.transform = `translateY(${smoothContentY}vh)`;
-                    
-                    // Video transforms with parallax effect
                     const targetScale = 1 + (scaleProgress * 0.2);
                     smoothVideoScale += (targetScale - smoothVideoScale) * 0.12;
                     
                     const videoY = scaleProgress * -50;
-                    const rotation = Math.sin(morphPhase * Math.PI) * 0.5;
+                    const rotation = Math.sin(contentPhaseProgress * Math.PI) * 0.5;
                     const blur = overlayProgress * 4;
                     
                     videoWrapper.style.transform = `
@@ -732,7 +702,7 @@
                     `;
                     video.style.filter = `blur(${blur}px) brightness(${1 - overlayProgress * 0.3})`;
                     
-                    // Layer overlays for smooth fade
+                    // Overlays
                     const targetGradientOpacity = overlayProgress * 0.6;
                     const targetOverlayOpacity = overlayProgress * 0.8;
                     
@@ -745,32 +715,30 @@
                     // Video container fade
                     videoContainer.style.opacity = 1 - (overlayProgress * 0.6);
                     
-                    // Activate content animations with smooth threshold
-                    if (contentProgress > 0.2) {
+                    // Activate content animations
+                    if (contentPhaseProgress > 0.2) {
                         content.classList.add('active');
                     }
                     
-                    // Progress bar visibility
-                    if (morphPhase > 0.8) {
-                        progress.classList.add('hide');
+                    // Hide video container completely when scrolled past
+                    if (contentPhaseProgress > 0.95) {
+                        videoContainer.style.display = 'none';
                     } else {
-                        progress.classList.remove('hide');
+                        videoContainer.style.display = 'block';
                     }
                 } else {
-                    // Reset morph values smoothly
+                    // Reset when scrolling back up
                     smoothVideoScale += (1 - smoothVideoScale) * 0.1;
                     smoothOverlayOpacity *= 0.95;
                     smoothGradientOpacity *= 0.95;
-                    smoothContentY += (100 - smoothContentY) * 0.1;
                     
                     videoWrapper.style.transform = `scale(${smoothVideoScale})`;
                     video.style.filter = 'none';
                     overlay.style.opacity = smoothOverlayOpacity;
                     gradientOverlay.style.opacity = smoothGradientOpacity;
-                    content.style.transform = `translateY(${smoothContentY}vh)`;
                     videoContainer.style.opacity = 1;
+                    videoContainer.style.display = 'block';
                     content.classList.remove('active');
-                    progress.classList.remove('hide');
                 }
                 
                 animId = requestAnimationFrame(update);
