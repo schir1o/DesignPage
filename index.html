@@ -108,7 +108,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
         }
 
         /* Dark Overlay */
@@ -118,7 +119,7 @@
             background: var(--dark);
             opacity: 0;
             pointer-events: none;
-            transition: opacity 1s ease;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Content Section */
@@ -130,16 +131,17 @@
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(100px);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(150px) scale(0.98);
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--dark);
             padding: 4rem 2rem;
+            will-change: transform, opacity;
         }
 
         .content-section.active {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .content-wrapper {
@@ -570,30 +572,41 @@
                 // Update progress bar
                 progressBar.style.width = `${videoScrollProgress * 100}%`;
                 
-                // Sync video with scroll
+                // Sync video with scroll - smoother interpolation
                 if (video.duration && scrolled < maxVideoScroll) {
                     const targetTime = videoScrollProgress * video.duration;
-                    currentTime += (targetTime - currentTime) * 0.12;
+                    currentTime += (targetTime - currentTime) * 0.08; // Slower for smoother playback
                     video.currentTime = currentTime;
                 }
                 
                 // Fade out video, fade in content
-                if (videoScrollProgress > 0.5) {
-                    const fadeProgress = (videoScrollProgress - 0.5) * 2;
-                    overlay.style.opacity = fadeProgress * 0.95;
-                    video.style.transform = `scale(${1 + fadeProgress * 0.1})`;
+                if (videoScrollProgress > 0.3) { // Start earlier
+                    const fadeProgress = Math.min(1, (videoScrollProgress - 0.3) / 0.5); // Longer transition
+                    overlay.style.opacity = fadeProgress * 0.98;
+                    video.style.transform = `scale(${1 + fadeProgress * 0.15})`;
                     
-                    if (videoScrollProgress > 0.65) {
-                        content.classList.add('active');
+                    // Progressive content reveal
+                    if (videoScrollProgress > 0.4) {
+                        const contentProgress = Math.min(1, (videoScrollProgress - 0.4) / 0.4);
+                        content.style.opacity = contentProgress;
+                        content.style.transform = `translateY(${150 - (150 * contentProgress)}px) scale(${0.98 + (0.02 * contentProgress)})`;
+                        
+                        if (videoScrollProgress > 0.5) {
+                            content.classList.add('active');
+                        }
+                    }
+                    
+                    if (videoScrollProgress > 0.7) {
                         progress.classList.add('hide');
                     } else {
-                        content.classList.remove('active');
                         progress.classList.remove('hide');
                     }
                 } else {
                     overlay.style.opacity = 0;
                     video.style.transform = 'scale(1)';
                     content.classList.remove('active');
+                    content.style.opacity = '';
+                    content.style.transform = '';
                     progress.classList.remove('hide');
                 }
                 
