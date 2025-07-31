@@ -3,112 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scroll Cinema</title>
+    <title>Portfolio Experience</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
+        :root {
+            --dark: #0a0a0a;
+            --accent: #4f46e5;
+            --text: #e2e8f0;
+            --text-dim: #64748b;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0a0a0a;
-            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            color: var(--text);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* Glassmorphism Card */
-        .card {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 320px;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-align: center;
-        }
-
-        .card:hover {
-            transform: translate(-50%, -50%) scale(1.05);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3);
-        }
-
-        .card h2 {
-            font-size: 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .card p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-        }
-
-        /* Portal Effect */
-        .portal {
+        /* Main Container direkt sichtbar */
+        .experience {
             position: fixed;
             inset: 0;
-            background: #000;
-            z-index: 100;
-            display: none;
-            opacity: 0;
             overflow-y: auto;
+            background: #000;
         }
 
-        .portal.active {
-            display: block;
-            opacity: 1;
-        }
-
-        /* Close Button */
+        /* Minimalist Close */
         .close {
             position: fixed;
             top: 2rem;
             right: 2rem;
-            z-index: 200;
-            width: 60px;
-            height: 60px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+            width: 3rem;
+            height: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
         }
 
         .close:hover {
-            transform: rotate(90deg) scale(1.1);
-            border-color: #667eea;
+            transform: scale(1.1);
+            border-color: var(--accent);
+            background: var(--accent);
         }
 
         .close::before,
         .close::after {
             content: '';
             position: absolute;
-            width: 24px;
-            height: 2px;
-            background: #fff;
+            width: 20px;
+            height: 1.5px;
+            background: var(--text);
         }
 
         .close::before { transform: rotate(45deg); }
         .close::after { transform: rotate(-45deg); }
 
-        /* Scroll Container */
+        /* Scroll Area */
         .scroll-container {
             height: 400vh;
-            position: relative;
         }
 
-        .sticky-video {
+        .video-container {
             position: sticky;
             top: 0;
             height: 100vh;
@@ -119,195 +83,283 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.8s ease;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Overlay */
-        .overlay {
+        /* Dark Overlay */
+        .dark-overlay {
             position: absolute;
             inset: 0;
-            background: #000;
+            background: var(--dark);
             opacity: 0;
-            transition: opacity 0.5s;
             pointer-events: none;
+            transition: opacity 1s ease;
         }
 
-        /* Text Reveal */
-        .reveal-text {
+        /* Content Section */
+        .content-section {
             position: absolute;
             inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transform: scale(0.8) translateY(50px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            background: #0a0a0a;
-            overflow-y: auto;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--dark);
             padding: 2rem;
         }
 
-        .reveal-text.show {
+        .content-section.active {
             opacity: 1;
-            transform: scale(1) translateY(0);
+            visibility: visible;
+            transform: scale(1);
         }
 
-        .content {
-            text-align: center;
-            max-width: 800px;
+        .content-wrapper {
+            max-width: 1000px;
+            width: 100%;
         }
 
-        .content h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900;
-            letter-spacing: -0.03em;
+        /* Typography */
+        .subtitle {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease 0.2s;
+        }
+
+        .content-section.active .subtitle {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
             margin-bottom: 2rem;
-            background: linear-gradient(135deg, #fff 0%, #667eea 50%, #764ba2 100%);
+            letter-spacing: -0.02em;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease 0.3s;
+        }
+
+        .content-section.active h1 {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .accent-text {
+            background: linear-gradient(90deg, var(--text) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-size: 200% auto;
-            animation: shine 3s ease-in-out infinite;
         }
 
-        @keyframes shine {
-            to { background-position: 200% center; }
+        .lead {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease 0.4s;
         }
 
-        .content p {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.8;
-            margin-bottom: 2rem;
+        .content-section.active .lead {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .highlight {
-            color: #667eea;
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease 0.5s;
         }
 
-        /* Scroll Indicator */
-        .scroll-hint {
-            position: absolute;
-            bottom: 3rem;
+        .content-section.active .grid {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(79, 70, 229, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: var(--text-dim);
+        }
+
+        /* Progress Indicator */
+        .progress {
+            position: fixed;
+            bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
+            width: 80px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+            overflow: hidden;
             opacity: 1;
-            transition: opacity 0.3s;
-            color: rgba(255, 255, 255, 0.5);
-            animation: float 2s ease-in-out infinite;
+            transition: opacity 0.3s ease;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-10px); }
+        .progress.hide {
+            opacity: 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .close { top: 1rem; right: 1rem; }
+            h1 { font-size: clamp(2rem, 10vw, 3rem); }
+            .grid { grid-template-columns: 1fr; gap: 1.5rem; }
         }
     </style>
 </head>
 <body>
-    <div class="card" onclick="openPortal()">
-        <h2>Enter Experience</h2>
-        <p>Click to begin the journey</p>
-    </div>
-
-    <div class="portal" id="portal">
-        <div class="close" onclick="closePortal()"></div>
+    <div class="experience" id="experience">
+        <div class="close" onclick="window.location.reload()"></div>
         
         <div class="scroll-container">
-            <div class="sticky-video">
-                <video id="video" muted playsinline>
+            <div class="video-container">
+                <video id="video" muted playsinline autoplay>
                     <source src="./video/car_open.mp4" type="video/mp4">
                 </video>
                 
-                <div class="overlay" id="overlay"></div>
+                <div class="dark-overlay" id="overlay"></div>
                 
-                <div class="reveal-text" id="reveal">
-                    <div class="content">
-                        <h1>Dein Projekt</h1>
-                        <p>Hier kommt dein Content rein - Text, Bilder, was du willst.</p>
-                        <p>Das Video verschwindet komplett und macht Platz für <span class="highlight">deinen Inhalt</span>.</p>
+                <div class="content-section" id="content">
+                    <div class="content-wrapper">
+                        <p class="subtitle">Automotive Design</p>
+                        <h1>
+                            Die Zukunft der<br>
+                            <span class="accent-text">Mobilität gestalten</span>
+                        </h1>
+                        <p class="lead">
+                            Innovative Fahrzeugkonzepte, die Technologie und Design 
+                            in perfekter Harmonie vereinen. Entdecken Sie visionäre 
+                            Lösungen für die Mobilität von morgen.
+                        </p>
                         
-                        <h2 style="color: #667eea; margin-top: 3rem;">Features</h2>
-                        <p>• Feature 1: Beschreibung</p>
-                        <p>• Feature 2: Beschreibung</p>
-                        <p>• Feature 3: Beschreibung</p>
+                        <div class="grid">
+                            <div class="card">
+                                <h3>Autonomes Fahren</h3>
+                                <p>Level 4 Autonomie mit intuitiver Mensch-Maschine-Interaktion</p>
+                            </div>
+                            <div class="card">
+                                <h3>Nachhaltige Materialien</h3>
+                                <p>Recycelte und biologisch abbaubare Komponenten</p>
+                            </div>
+                            <div class="card">
+                                <h3>Digital Experience</h3>
+                                <p>Nahtlose Integration von digitalen Services</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="scroll-hint" id="hint">
-                    <p>↓ Scroll ↓</p>
+                <div class="progress" id="progress">
+                    <div class="progress-bar" id="progressBar"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const portal = document.getElementById('portal');
+        const experience = document.getElementById('experience');
         const video = document.getElementById('video');
         const overlay = document.getElementById('overlay');
-        const reveal = document.getElementById('reveal');
-        const hint = document.getElementById('hint');
+        const content = document.getElementById('content');
+        const progress = document.getElementById('progress');
+        const progressBar = document.getElementById('progressBar');
+        
+        let currentTime = 0;
         let animId;
 
-        function openPortal() {
-            portal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+        // Auto-start on load
+        window.addEventListener('load', () => {
             video.currentTime = 0;
             video.pause();
-            video.load();
-            
-            video.addEventListener('loadeddata', function() {
-                startScrollAnimation();
-            });
-            
-            if (video.readyState >= 3) {
-                startScrollAnimation();
-            }
-        }
+            initAnimation();
+        });
 
-        function closePortal() {
-            portal.classList.remove('active');
-            document.body.style.overflow = '';
-            cancelAnimationFrame(animId);
-        }
-
-        function startScrollAnimation() {
-            let current = 0;
-            
+        function initAnimation() {
             function update() {
-                const scrolled = portal.scrollTop;
-                const total = portal.scrollHeight - window.innerHeight;
-                const progress = Math.min(1, scrolled / total);
+                const scrolled = experience.scrollTop;
+                const total = experience.scrollHeight - window.innerHeight;
+                const scrollProgress = Math.min(1, scrolled / total);
                 
-                // Video sync
+                // Update progress bar
+                progressBar.style.width = `${scrollProgress * 100}%`;
+                
+                // Sync video with scroll
                 if (video.duration) {
-                    const target = progress * video.duration;
-                    current += (target - current) * 0.1;
-                    video.currentTime = current;
+                    const targetTime = scrollProgress * video.duration;
+                    currentTime += (targetTime - currentTime) * 0.12;
+                    video.currentTime = currentTime;
                 }
                 
-                // Effects
-                hint.style.opacity = 1 - progress * 3;
-                
-                // Video ausfaden ab 60%
-                if (progress > 0.6) {
-                    const fadeProgress = (progress - 0.6) / 0.4;
-                    overlay.style.opacity = fadeProgress;
-                    video.style.opacity = 1 - fadeProgress;
+                // Fade out video, fade in content
+                if (scrollProgress > 0.5) {
+                    const fadeProgress = (scrollProgress - 0.5) * 2;
+                    overlay.style.opacity = fadeProgress * 0.95;
+                    video.style.transform = `scale(${1 + fadeProgress * 0.1})`;
+                    
+                    if (scrollProgress > 0.65) {
+                        content.classList.add('active');
+                        progress.classList.add('hide');
+                    } else {
+                        content.classList.remove('active');
+                        progress.classList.remove('hide');
+                    }
                 } else {
                     overlay.style.opacity = 0;
-                    video.style.opacity = 1;
+                    video.style.transform = 'scale(1)';
+                    content.classList.remove('active');
+                    progress.classList.remove('hide');
                 }
-                
-                // Text einblenden ab 70%
-                if (progress > 0.7) reveal.classList.add('show');
-                else reveal.classList.remove('show');
                 
                 animId = requestAnimationFrame(update);
             }
             update();
         }
 
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closePortal();
+        // Clean animations on unload
+        window.addEventListener('beforeunload', () => {
+            if (animId) cancelAnimationFrame(animId);
         });
     </script>
 </body>
