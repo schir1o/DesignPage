@@ -48,15 +48,13 @@
             scrollbar-color: var(--accent) rgba(255, 255, 255, 0.1);
         }
 
-        /* Main Container direkt sichtbar */
+        /* Main Container */
         .experience {
-            position: fixed;
-            inset: 0;
-            overflow-y: auto;
+            min-height: 100vh;
             background: #000;
         }
 
-        /* Minimalist Close */
+        /* Close Button */
         .close {
             position: fixed;
             top: 2rem;
@@ -93,9 +91,10 @@
         .close::before { transform: rotate(45deg); }
         .close::after { transform: rotate(-45deg); }
 
-        /* Scroll Area */
-        .scroll-container {
-            height: 300vh; /* Reduziert von 400vh */
+        /* Video Section */
+        .video-section {
+            height: 300vh;
+            position: relative;
         }
 
         .video-container {
@@ -124,35 +123,29 @@
 
         /* Content Section */
         .content-section {
-            position: absolute;
-            inset: 0;
+            position: relative;
+            min-height: 100vh;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.95);
+            transform: translateY(100px);
             transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--dark);
-            padding: 2rem;
-            overflow-y: auto;
-            overflow-x: hidden;
-            pointer-events: none;
+            padding: 4rem 2rem;
         }
-
-        /* Webkit Scrollbar Styling - Removed as it's now global */
 
         .content-section.active {
             opacity: 1;
             visibility: visible;
-            transform: scale(1);
+            transform: translateY(0);
         }
 
         .content-wrapper {
             max-width: 1200px;
             width: 100%;
             padding: 4rem 0;
-            margin: 0 auto;
         }
 
         /* Hero Image */
@@ -444,111 +437,109 @@
     <div class="experience" id="experience">
         <div class="close" onclick="window.location.reload()"></div>
         
-        <div class="scroll-container">
-            <div class="video-section">
-                <div class="video-container">
-                    <video id="video" muted playsinline autoplay>
-                        <source src="./video/car_open-2.mp4" type="video/mp4">
-                    </video>
-                    
-                    <div class="dark-overlay" id="overlay"></div>
-                </div>
+        <!-- Video Section -->
+        <div class="video-section">
+            <div class="video-container">
+                <video id="video" muted playsinline autoplay>
+                    <source src="./video/car_open-2.mp4" type="video/mp4">
+                </video>
+                
+                <div class="dark-overlay" id="overlay"></div>
             </div>
-            
-            <div class="content-section" id="content">
-                <div class="content-wrapper">
-                        <!-- Hero Image -->
-                        <div class="hero-image">
-                            <img src="https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=1200&q=80" alt="Futuristic Car Design">
-                        </div>
+        </div>
+        
+        <!-- Content Section -->
+        <div class="content-section" id="content">
+            <div class="content-wrapper">
+                <!-- Hero Image -->
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=1200&q=80" alt="Futuristic Car Design">
+                </div>
 
-                        <p class="subtitle">Automotive Design</p>
-                        <h1>
-                            Die Zukunft der<br>
-                            <span class="accent-text">Mobilität gestalten</span>
-                        </h1>
-                        <p class="lead">
-                            Innovative Fahrzeugkonzepte, die Technologie und Design 
-                            in perfekter Harmonie vereinen. Entdecken Sie visionäre 
-                            Lösungen für die Mobilität von morgen.
+                <p class="subtitle">Automotive Design</p>
+                <h1>
+                    Die Zukunft der<br>
+                    <span class="accent-text">Mobilität gestalten</span>
+                </h1>
+                <p class="lead">
+                    Innovative Fahrzeugkonzepte, die Technologie und Design 
+                    in perfekter Harmonie vereinen. Entdecken Sie visionäre 
+                    Lösungen für die Mobilität von morgen.
+                </p>
+                
+                <!-- Cards mit Bildern -->
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" alt="Autonomous Driving">
+                        </div>
+                        <div class="card-content">
+                            <h3>Autonomes Fahren</h3>
+                            <p>Level 4 Autonomie mit intuitiver Mensch-Maschine-Interaktion</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Sustainable Materials">
+                        </div>
+                        <div class="card-content">
+                            <h3>Nachhaltige Materialien</h3>
+                            <p>Recycelte und biologisch abbaubare Komponenten</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="https://images.unsplash.com/photo-1611016186353-9af58c69a533?w=800&q=80" alt="Digital Experience">
+                        </div>
+                        <div class="card-content">
+                            <h3>Digital Experience</h3>
+                            <p>Nahtlose Integration von digitalen Services</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Section -->
+                <div class="two-column">
+                    <div class="column-text">
+                        <h2>Visionäres Design</h2>
+                        <p>
+                            Unsere Designphilosophie verbindet ästhetische Exzellenz mit 
+                            funktionaler Innovation. Jede Linie, jede Kurve ist durchdacht 
+                            und trägt zur Gesamtperformance des Fahrzeugs bei.
                         </p>
-                        
-                        <!-- Cards mit Bildern -->
-                        <div class="grid">
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" alt="Autonomous Driving">
-                                </div>
-                                <div class="card-content">
-                                    <h3>Autonomes Fahren</h3>
-                                    <p>Level 4 Autonomie mit intuitiver Mensch-Maschine-Interaktion</p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="Sustainable Materials">
-                                </div>
-                                <div class="card-content">
-                                    <h3>Nachhaltige Materialien</h3>
-                                    <p>Recycelte und biologisch abbaubare Komponenten</p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-image">
-                                    <img src="https://images.unsplash.com/photo-1611016186353-9af58c69a533?w=800&q=80" alt="Digital Experience">
-                                </div>
-                                <div class="card-content">
-                                    <h3>Digital Experience</h3>
-                                    <p>Nahtlose Integration von digitalen Services</p>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="column-image">
+                        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80" alt="Car Interior Design">
+                    </div>
+                </div>
 
-                        <!-- Two Column Section -->
-                        <div class="two-column">
-                            <div class="column-text">
-                                <h2>Visionäres Design</h2>
-                                <p>
-                                    Unsere Designphilosophie verbindet ästhetische Exzellenz mit 
-                                    funktionaler Innovation. Jede Linie, jede Kurve ist durchdacht 
-                                    und trägt zur Gesamtperformance des Fahrzeugs bei.
-                                </p>
-                            </div>
-                            <div class="column-image">
-                                <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80" alt="Car Interior Design">
-                            </div>
+                <!-- Gallery Section -->
+                <div class="gallery">
+                    <h2>Design Gallery</h2>
+                    <div class="gallery-grid">
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=600&q=80" alt="Gallery 1">
                         </div>
-
-                        <!-- Gallery Section -->
-                        <div class="gallery">
-                            <h2>Design Gallery</h2>
-                            <div class="gallery-grid">
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=600&q=80" alt="Gallery 1">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80" alt="Gallery 2">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&q=80" alt="Gallery 3">
-                                </div>
-                                <div class="gallery-item">
-                                    <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&q=80" alt="Gallery 4">
-                                </div>
-                            </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=80" alt="Gallery 2">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&q=80" alt="Gallery 3">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&q=80" alt="Gallery 4">
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="progress" id="progress">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
+        </div>
+        
+        <div class="progress" id="progress">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
     </div>
 
     <script>
-        const experience = document.getElementById('experience');
         const video = document.getElementById('video');
         const overlay = document.getElementById('overlay');
         const content = document.getElementById('content');
@@ -568,7 +559,7 @@
 
         function initAnimation() {
             function update() {
-                const scrolled = experience.scrollTop;
+                const scrolled = window.pageYOffset;
                 const videoSectionHeight = videoSection.offsetHeight;
                 const windowHeight = window.innerHeight;
                 const maxVideoScroll = videoSectionHeight - windowHeight;
@@ -605,11 +596,6 @@
                     content.classList.remove('active');
                     progress.classList.remove('hide');
                 }
-                
-                animId = requestAnimationFrame(update);
-            }
-            update();
-        }
                 
                 animId = requestAnimationFrame(update);
             }
