@@ -104,13 +104,15 @@
             height: 100vh;
             overflow: hidden;
             z-index: 1;
+            transition: opacity 0.5s ease;
         }
 
         video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            will-change: transform;
+            will-change: transform, filter;
+            transition: filter 0.3s ease;
         }
 
         /* Dark Overlay */
@@ -125,16 +127,34 @@
 
         /* Content Section */
         .content-section {
-            position: sticky;
-            top: 0;
-            min-height: 100vh;
+            position: fixed;
+            top: 100vh;
+            left: 0;
+            right: 0;
+            height: 100vh;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             background: var(--dark);
             z-index: 2;
             transform: translateY(0);
-            margin-top: -100vh;
+            transition: none;
+            will-change: transform;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Gradient edge for smooth blend */
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, var(--dark) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 1;
         }
 
         .content-wrapper {
@@ -576,7 +596,8 @@
                     }
                     // Reset any morph effects
                     overlay.style.opacity = 0;
-                    video.style.transform = 'scale(1) translateY(0)';
+                    video.style.transform = 'scale(1)';
+                    content.style.transform = 'translateY(100vh)';
                     content.classList.remove('active');
                 }
                 
@@ -584,27 +605,44 @@
                 if (scrollProgress > 0.7) {
                     const morphProgress = Math.min(1, (scrollProgress - 0.7) / 0.3);
                     
-                    // Fade overlay
-                    overlay.style.opacity = morphProgress * 0.95;
+                    // Smooth easing function
+                    const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+                    const easedProgress = easeOutCubic(morphProgress);
                     
-                    // Scale and move video
-                    const scale = 1 + (morphProgress * 0.2);
-                    const translateY = morphProgress * -50;
-                    video.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+                    // Content slides up
+                    const contentY = 100 - (easedProgress * 100);
+                    content.style.transform = `translateY(${contentY}vh)`;
                     
-                    // Activate content
-                    if (morphProgress > 0.2) {
+                    // Video transforms
+                    const scale = 1 + (easedProgress * 0.15);
+                    const videoY = easedProgress * -30;
+                    const blur = easedProgress * 3;
+                    video.style.transform = `scale(${scale}) translateY(${videoY}px)`;
+                    video.style.filter = `blur(${blur}px)`;
+                    
+                    // Fade overlay with adjusted timing
+                    overlay.style.opacity = easedProgress * 0.7;
+                    
+                    // Fade video container
+                    const videoContainer = document.querySelector('.video-container');
+                    videoContainer.style.opacity = 1 - (easedProgress * 0.5);
+                    
+                    // Activate content animations
+                    if (morphProgress > 0.3) {
                         content.classList.add('active');
                     }
                     
-                    // Hide progress bar at end
-                    if (morphProgress > 0.9) {
+                    // Hide progress bar
+                    if (morphProgress > 0.8) {
                         progress.classList.add('hide');
                     } else {
                         progress.classList.remove('hide');
                     }
                 } else {
-                    // Progress bar visible during video
+                    // Reset video effects
+                    video.style.filter = 'blur(0px)';
+                    const videoContainer = document.querySelector('.video-container');
+                    videoContainer.style.opacity = 1;
                     progress.classList.remove('hide');
                 }
                 
