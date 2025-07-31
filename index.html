@@ -29,6 +29,11 @@
             scroll-behavior: smooth;
         }
 
+        /* Ensure we start at top */
+        html, body {
+            scroll-behavior: auto !important;
+        }
+
         /* Global Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -554,6 +559,10 @@
             }
         }
     </style>
+    <script>
+        // Force scroll to top immediately
+        window.scrollTo(0, 0);
+    </script>
 </head>
 <body>
     <div class="experience" id="experience">
@@ -694,14 +703,27 @@
             }
         };
 
+        // Force scroll to top on page load/reload
+        window.history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
         // Auto-start on load
         window.addEventListener('load', () => {
+            // Ensure we're at the top even after load
+            window.scrollTo(0, 0);
             video.currentTime = 0;
             video.pause();
             // Remove controls programmatically
             video.controls = false;
             video.removeAttribute('controls');
             initAnimation();
+        });
+
+        // Also force scroll to top before unload
+        window.addEventListener('beforeunload', () => {
+            window.scrollTo(0, 0);
         });
 
         function initAnimation() {
