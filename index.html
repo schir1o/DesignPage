@@ -93,7 +93,7 @@
 
         /* Video Section */
         .video-section {
-            height: 300vh;
+            height: 200vh; /* Reduced to create overlap */
             position: relative;
         }
 
@@ -124,24 +124,62 @@
 
         /* Content Section */
         .content-section {
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
             min-height: 100vh;
             display: flex;
             align-items: flex-start;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(150px) scale(0.98);
+            transform: translateY(0) scale(0.98);
             transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--dark);
+            background: transparent;
             padding: 4rem 2rem;
             will-change: transform, opacity;
+            pointer-events: none;
+            z-index: 10;
         }
 
         .content-section.active {
             opacity: 1;
             visibility: visible;
             transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        /* Add background to content wrapper instead */
+        .content-wrapper {
+            max-width: 1200px;
+            width: 100%;
+            padding: 4rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Smooth gradient background */
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: -50vh;
+            left: 0;
+            right: 0;
+            height: 150vh;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                rgba(10, 10, 10, 0.5) 20%,
+                rgba(10, 10, 10, 0.9) 40%,
+                var(--dark) 60%
+            );
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            pointer-events: none;
+        }
+
+        .content-section.active::before {
+            opacity: 1;
         }
 
         .content-wrapper {
@@ -448,8 +486,6 @@
                 
                 <div class="dark-overlay" id="overlay"></div>
             </div>
-        </div>
-        
         <!-- Content Section -->
         <div class="content-section" id="content">
             <div class="content-wrapper">
@@ -580,23 +616,21 @@
                 }
                 
                 // Fade out video, fade in content
-                if (videoScrollProgress > 0.3) { // Start earlier
-                    const fadeProgress = Math.min(1, (videoScrollProgress - 0.3) / 0.5); // Longer transition
+                if (videoScrollProgress > 0.3) {
+                    const fadeProgress = Math.min(1, (videoScrollProgress - 0.3) / 0.5);
                     overlay.style.opacity = fadeProgress * 0.98;
                     video.style.transform = `scale(${1 + fadeProgress * 0.15})`;
                     
                     // Progressive content reveal
                     if (videoScrollProgress > 0.4) {
+                        content.classList.add('active');
                         const contentProgress = Math.min(1, (videoScrollProgress - 0.4) / 0.4);
                         content.style.opacity = contentProgress;
-                        content.style.transform = `translateY(${150 - (150 * contentProgress)}px) scale(${0.98 + (0.02 * contentProgress)})`;
-                        
-                        if (videoScrollProgress > 0.5) {
-                            content.classList.add('active');
-                        }
+                    } else {
+                        content.classList.remove('active');
                     }
                     
-                    if (videoScrollProgress > 0.7) {
+                    if (videoScrollProgress > 0.8) {
                         progress.classList.add('hide');
                     } else {
                         progress.classList.remove('hide');
@@ -606,7 +640,6 @@
                     video.style.transform = 'scale(1)';
                     content.classList.remove('active');
                     content.style.opacity = '';
-                    content.style.transform = '';
                     progress.classList.remove('hide');
                 }
                 
