@@ -93,7 +93,7 @@
 
         /* Video Section */
         .video-section {
-            height: 200vh; /* Reduced to create overlap */
+            height: 300vh;
             position: relative;
         }
 
@@ -102,6 +102,7 @@
             top: 0;
             height: 100vh;
             overflow: hidden;
+            z-index: 1;
         }
 
         video {
@@ -122,64 +123,39 @@
             transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Content Section */
+        /* Content Section - Morphing from bottom */
         .content-section {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(0) scale(0.98);
-            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: transparent;
+            transform: translateY(100vh);
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--dark);
             padding: 4rem 2rem;
-            will-change: transform, opacity;
-            pointer-events: none;
-            z-index: 10;
+            will-change: transform;
+            z-index: 2;
+            overflow-y: auto;
         }
 
         .content-section.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
+            transform: translateY(0);
         }
 
-        /* Add background to content wrapper instead */
-        .content-wrapper {
-            max-width: 1200px;
-            width: 100%;
-            padding: 4rem 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Smooth gradient background */
+        /* Gradient overlay for smooth transition */
         .content-section::before {
             content: '';
             position: absolute;
-            top: -50vh;
+            top: -100px;
             left: 0;
             right: 0;
-            height: 150vh;
-            background: linear-gradient(to bottom, 
-                transparent 0%, 
-                rgba(10, 10, 10, 0.5) 20%,
-                rgba(10, 10, 10, 0.9) 40%,
-                var(--dark) 60%
-            );
-            opacity: 0;
-            transition: opacity 1.5s ease;
+            height: 100px;
+            background: linear-gradient(to top, var(--dark) 0%, transparent 100%);
             pointer-events: none;
-        }
-
-        .content-section.active::before {
-            opacity: 1;
         }
 
         .content-wrapper {
@@ -615,32 +591,43 @@
                     video.currentTime = currentTime;
                 }
                 
-                // Fade out video, fade in content
-                if (videoScrollProgress > 0.3) {
-                    const fadeProgress = Math.min(1, (videoScrollProgress - 0.3) / 0.5);
-                    overlay.style.opacity = fadeProgress * 0.98;
-                    video.style.transform = `scale(${1 + fadeProgress * 0.15})`;
+                // Morphing transition
+                if (videoScrollProgress > 0.5) {
+                    const morphProgress = Math.min(1, (videoScrollProgress - 0.5) / 0.5);
                     
-                    // Progressive content reveal
-                    if (videoScrollProgress > 0.4) {
+                    // Slide content up from bottom
+                    const slideUp = 100 - (morphProgress * 100);
+                    content.style.transform = `translateY(${slideUp}vh)`;
+                    
+                    // Fade and scale video
+                    overlay.style.opacity = morphProgress * 0.8;
+                    video.style.transform = `scale(${1 + morphProgress * 0.2}) translateY(${-morphProgress * 20}px)`;
+                    
+                    // Add active class for final state
+                    if (morphProgress > 0.1) {
                         content.classList.add('active');
-                        const contentProgress = Math.min(1, (videoScrollProgress - 0.4) / 0.4);
-                        content.style.opacity = contentProgress;
-                    } else {
-                        content.classList.remove('active');
                     }
                     
-                    if (videoScrollProgress > 0.8) {
+                    // Hide progress at end
+                    if (morphProgress > 0.8) {
                         progress.classList.add('hide');
+                        // Lock scroll when morph is complete
+                        if (morphProgress >= 1) {
+                            document.body.style.overflow = 'hidden';
+                            content.style.overflowY = 'auto';
+                        }
                     } else {
                         progress.classList.remove('hide');
                     }
                 } else {
+                    // Reset everything
+                    content.style.transform = 'translateY(100vh)';
+                    content.classList.remove('active');
                     overlay.style.opacity = 0;
                     video.style.transform = 'scale(1)';
-                    content.classList.remove('active');
-                    content.style.opacity = '';
                     progress.classList.remove('hide');
+                    document.body.style.overflow = '';
+                    content.style.overflowY = '';
                 }
                 
                 animId = requestAnimationFrame(update);
