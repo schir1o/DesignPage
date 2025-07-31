@@ -60,6 +60,7 @@
             position: relative;
             min-height: 100vh;
             background: #000;
+            overflow-x: hidden;
         }
 
         /* Close Button */
@@ -127,6 +128,40 @@
             height: 100%;
             object-fit: cover;
             will-change: transform, filter, opacity;
+            pointer-events: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Hide all video controls */
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-enclosure {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-panel {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-play-button {
+            display: none !important;
+        }
+        
+        video::-moz-media-controls {
+            display: none !important;
+        }
+        
+        video::--webkit-media-controls-play-button {
+            display: none !important;
+        }
+        
+        video::-webkit-media-controls-start-playback-button {
+            display: none !important;
         }
 
         /* Multiple overlay layers for smoother transition */
@@ -528,7 +563,7 @@
         <div class="video-section">
             <div class="video-container">
                 <div class="video-wrapper">
-                    <video id="video" muted playsinline autoplay>
+                    <video id="video" muted playsinline autoplay controls="false">
                         <source src="./video/car_open-2.mp4" type="video/mp4">
                     </video>
                     
@@ -663,6 +698,9 @@
         window.addEventListener('load', () => {
             video.currentTime = 0;
             video.pause();
+            // Remove controls programmatically
+            video.controls = false;
+            video.removeAttribute('controls');
             initAnimation();
         });
 
