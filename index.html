@@ -12,8 +12,6 @@
             --accent: #4f46e5;
             --text: #e2e8f0;
             --text-dim: #64748b;
-            --easing: cubic-bezier(0.23, 1, 0.32, 1);
-            --easing-out: cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         body {
@@ -22,11 +20,6 @@
             color: var(--text);
             overflow-x: hidden;
             line-height: 1.6;
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
         }
 
         /* Global Custom Scrollbar */
@@ -57,7 +50,6 @@
 
         /* Main Container */
         .experience {
-            position: relative;
             min-height: 100vh;
             background: #000;
         }
@@ -76,7 +68,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s var(--easing);
+            transition: all 0.3s ease;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
         }
@@ -94,7 +86,6 @@
             width: 20px;
             height: 1.5px;
             background: var(--text);
-            transition: transform 0.3s ease;
         }
 
         .close::before { transform: rotate(45deg); }
@@ -102,7 +93,7 @@
 
         /* Video Section */
         .video-section {
-            height: 400vh;
+            height: 300vh;
             position: relative;
         }
 
@@ -111,90 +102,50 @@
             top: 0;
             height: 100vh;
             overflow: hidden;
-            z-index: 1;
-            will-change: opacity;
-        }
-
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            will-change: transform;
         }
 
         video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            will-change: transform, filter, opacity;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Multiple overlay layers for smoother transition */
-        .overlay-container {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
+        /* Dark Overlay */
         .dark-overlay {
             position: absolute;
             inset: 0;
             background: var(--dark);
             opacity: 0;
-            will-change: opacity;
-        }
-
-        .gradient-overlay {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, transparent 0%, var(--dark) 100%);
-            opacity: 0;
-            will-change: opacity;
+            pointer-events: none;
+            transition: opacity 1s ease;
         }
 
         /* Content Section */
         .content-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100vh;
+            position: relative;
+            min-height: 100vh;
             display: flex;
             align-items: flex-start;
             justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(100px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--dark);
-            z-index: 2;
-            transform: translateY(100vh);
-            will-change: transform;
-            overflow-y: auto;
-            overflow-x: hidden;
+            padding: 4rem 2rem;
         }
 
-        /* Smoother gradient edge */
-        .content-section::before {
-            content: '';
-            position: absolute;
-            top: -300px;
-            left: 0;
-            right: 0;
-            height: 300px;
-            background: linear-gradient(to top, var(--dark) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 1;
+        .content-section.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         .content-wrapper {
             max-width: 1200px;
             width: 100%;
-            padding: 6rem 2rem 4rem;
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1.2s var(--easing-out);
-        }
-
-        .content-section.active .content-wrapper {
-            opacity: 1;
-            transform: translateY(0);
+            padding: 4rem 0;
         }
 
         /* Hero Image */
@@ -205,8 +156,8 @@
             overflow: hidden;
             border-radius: 16px;
             opacity: 0;
-            transform: translateY(60px) scale(0.9);
-            transition: all 1.4s var(--easing-out) 0.1s;
+            transform: translateY(50px) scale(0.95);
+            transition: all 1s ease 0.6s;
         }
 
         .content-section.active .hero-image {
@@ -218,7 +169,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.8s var(--easing);
+            transition: transform 0.6s ease;
         }
 
         .hero-image:hover img {
@@ -233,8 +184,8 @@
             color: var(--accent);
             margin-bottom: 1rem;
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 1s var(--easing-out) 0.2s;
+            transform: translateY(20px);
+            transition: all 0.8s ease 0.2s;
         }
 
         .content-section.active .subtitle {
@@ -249,8 +200,8 @@
             margin-bottom: 2rem;
             letter-spacing: -0.02em;
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s var(--easing-out) 0.3s;
+            transform: translateY(30px);
+            transition: all 0.8s ease 0.3s;
         }
 
         .content-section.active h1 {
@@ -262,15 +213,6 @@
             background: linear-gradient(90deg, var(--text) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: inline-block;
-            transform: translateX(-20px);
-            opacity: 0;
-            transition: all 1.2s var(--easing-out) 0.4s;
-        }
-
-        .content-section.active .accent-text {
-            transform: translateX(0);
-            opacity: 1;
         }
 
         .lead {
@@ -279,8 +221,8 @@
             margin-bottom: 3rem;
             max-width: 700px;
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s var(--easing-out) 0.5s;
+            transform: translateY(30px);
+            transition: all 0.8s ease 0.4s;
         }
 
         .content-section.active .lead {
@@ -296,8 +238,8 @@
             margin: 4rem 0;
             align-items: center;
             opacity: 0;
-            transform: translateY(50px);
-            transition: all 1.2s var(--easing-out) 0.8s;
+            transform: translateY(40px);
+            transition: all 0.8s ease 0.7s;
         }
 
         .content-section.active .two-column {
@@ -317,11 +259,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 0.6s var(--easing);
+            transition: all 0.5s ease;
         }
 
         .column-image:hover img {
-            transform: scale(1.08) rotate(0.5deg);
+            transform: scale(1.1) rotate(1deg);
         }
 
         .column-text h2 {
@@ -334,12 +276,20 @@
             line-height: 1.8;
         }
 
-        /* Grid Layout with staggered animations */
+        /* Grid Layout with Images */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 4rem;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease 0.5s;
+        }
+
+        .content-section.active .grid {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .card {
@@ -347,34 +297,13 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             overflow: hidden;
-            transition: all 0.4s var(--easing);
-            opacity: 0;
-            transform: translateY(40px);
-        }
-
-        .content-section.active .card:nth-child(1) {
-            transition-delay: 0.6s;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .content-section.active .card:nth-child(2) {
-            transition-delay: 0.7s;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .content-section.active .card:nth-child(3) {
-            transition-delay: 0.8s;
-            opacity: 1;
-            transform: translateY(0);
+            transition: all 0.3s ease;
         }
 
         .card:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(79, 70, 229, 0.3);
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.1);
+            transform: translateY(-4px);
         }
 
         .card-image {
@@ -387,11 +316,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s var(--easing);
+            transition: transform 0.3s ease;
         }
 
         .card:hover .card-image img {
-            transform: scale(1.15);
+            transform: scale(1.1);
         }
 
         .card-content {
@@ -411,8 +340,8 @@
         .gallery {
             margin: 4rem 0;
             opacity: 0;
-            transform: translateY(50px);
-            transition: all 1.2s var(--easing-out) 0.9s;
+            transform: translateY(40px);
+            transition: all 0.8s ease 0.8s;
         }
 
         .content-section.active .gallery {
@@ -437,26 +366,13 @@
             border-radius: 8px;
             cursor: pointer;
             position: relative;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 0.6s var(--easing);
         }
-
-        .content-section.active .gallery-item {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .content-section.active .gallery-item:nth-child(1) { transition-delay: 1s; }
-        .content-section.active .gallery-item:nth-child(2) { transition-delay: 1.1s; }
-        .content-section.active .gallery-item:nth-child(3) { transition-delay: 1.2s; }
-        .content-section.active .gallery-item:nth-child(4) { transition-delay: 1.3s; }
 
         .gallery-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 0.6s var(--easing);
+            transition: all 0.4s ease;
         }
 
         .gallery-item::after {
@@ -465,7 +381,7 @@
             inset: 0;
             background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7));
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.3s ease;
         }
 
         .gallery-item:hover::after {
@@ -473,7 +389,7 @@
         }
 
         .gallery-item:hover img {
-            transform: scale(1.15) rotate(1deg);
+            transform: scale(1.1);
         }
 
         /* Progress Indicator */
@@ -488,21 +404,18 @@
             border-radius: 1px;
             overflow: hidden;
             opacity: 1;
-            transition: opacity 0.6s var(--easing);
-            z-index: 10;
+            transition: opacity 0.3s ease;
         }
 
         .progress.hide {
             opacity: 0;
-            transform: translateX(-50%) translateY(20px);
         }
 
         .progress-bar {
             height: 100%;
             background: var(--accent);
             width: 0%;
-            transition: width 0.15s ease-out;
-            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+            transition: width 0.1s ease;
         }
 
         /* Responsive */
@@ -527,16 +440,11 @@
         <!-- Video Section -->
         <div class="video-section">
             <div class="video-container">
-                <div class="video-wrapper">
-                    <video id="video" muted playsinline autoplay>
-                        <source src="./video/car_open-2.mp4" type="video/mp4">
-                    </video>
-                    
-                    <div class="overlay-container">
-                        <div class="gradient-overlay" id="gradientOverlay"></div>
-                        <div class="dark-overlay" id="overlay"></div>
-                    </div>
-                </div>
+                <video id="video" muted playsinline autoplay>
+                    <source src="./video/car_open-2.mp4" type="video/mp4">
+                </video>
+                
+                <div class="dark-overlay" id="overlay"></div>
             </div>
         </div>
         
@@ -634,30 +542,13 @@
     <script>
         const video = document.getElementById('video');
         const overlay = document.getElementById('overlay');
-        const gradientOverlay = document.getElementById('gradientOverlay');
         const content = document.getElementById('content');
         const progress = document.getElementById('progress');
         const progressBar = document.getElementById('progressBar');
         const videoSection = document.querySelector('.video-section');
-        const videoWrapper = document.querySelector('.video-wrapper');
-        const videoContainer = document.querySelector('.video-container');
         
         let currentTime = 0;
         let animId;
-        let lastScrollY = 0;
-        let scrollVelocity = 0;
-
-        // Advanced easing functions
-        const easings = {
-            easeOutQuart: t => 1 - Math.pow(1 - t, 4),
-            easeOutExpo: t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t),
-            easeInOutQuart: t => t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2,
-            spring: t => {
-                const c4 = (2 * Math.PI) / 3;
-                return t === 0 ? 0 : t === 1 ? 1 : 
-                    Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
-            }
-        };
 
         // Auto-start on load
         window.addEventListener('load', () => {
@@ -667,128 +558,49 @@
         });
 
         function initAnimation() {
-            let smoothScrollProgress = 0;
-            let smoothVideoTime = 0;
-            let smoothContentY = 100;
-            let smoothVideoScale = 1;
-            let smoothOverlayOpacity = 0;
-            let smoothGradientOpacity = 0;
-
             function update() {
                 const scrolled = window.pageYOffset;
                 const videoSectionHeight = videoSection.offsetHeight;
                 const windowHeight = window.innerHeight;
-                const maxScroll = videoSectionHeight - windowHeight;
+                const maxVideoScroll = videoSectionHeight - windowHeight;
                 
-                // Calculate scroll velocity for dynamic effects
-                scrollVelocity = scrolled - lastScrollY;
-                lastScrollY = scrolled;
+                // Calculate progress for video section only
+                const videoScrollProgress = Math.min(1, scrolled / maxVideoScroll);
                 
-                // Calculate raw scroll progress
-                const rawScrollProgress = Math.min(1, scrolled / maxScroll);
+                // Update progress bar
+                progressBar.style.width = `${videoScrollProgress * 100}%`;
                 
-                // Smooth scroll progress
-                smoothScrollProgress += (rawScrollProgress - smoothScrollProgress) * 0.1;
-                
-                // Update progress bar with spring effect
-                const springProgress = easings.spring(smoothScrollProgress);
-                progressBar.style.width = `${springProgress * 100}%`;
-                
-                // Define transition phases
-                const videoPhase = Math.min(1, smoothScrollProgress / 0.65);
-                const morphPhase = Math.max(0, (smoothScrollProgress - 0.65) / 0.35);
-                
-                // Video playback (0% to 65% of scroll)
-                if (video.duration && videoPhase < 1) {
-                    const targetTime = videoPhase * video.duration;
-                    smoothVideoTime += (targetTime - smoothVideoTime) * 0.12;
-                    video.currentTime = smoothVideoTime;
+                // Sync video with scroll
+                if (video.duration && scrolled < maxVideoScroll) {
+                    const targetTime = videoScrollProgress * video.duration;
+                    currentTime += (targetTime - currentTime) * 0.12;
+                    video.currentTime = currentTime;
                 }
                 
-                // Morph transition (65% to 100% of scroll)
-                if (morphPhase > 0) {
-                    // Use different easing for different properties
-                    const scaleProgress = easings.easeOutExpo(morphPhase);
-                    const contentProgress = easings.easeOutQuart(morphPhase);
-                    const overlayProgress = easings.easeInOutQuart(morphPhase);
+                // Fade out video, fade in content
+                if (videoScrollProgress > 0.5) {
+                    const fadeProgress = (videoScrollProgress - 0.5) * 2;
+                    overlay.style.opacity = fadeProgress * 0.95;
+                    video.style.transform = `scale(${1 + fadeProgress * 0.1})`;
                     
-                    // Content slides up with smooth acceleration
-                    const targetContentY = 100 - (contentProgress * 100);
-                    smoothContentY += (targetContentY - smoothContentY) * 0.15;
-                    content.style.transform = `translateY(${smoothContentY}vh)`;
-                    
-                    // Video transforms with parallax effect
-                    const targetScale = 1 + (scaleProgress * 0.2);
-                    smoothVideoScale += (targetScale - smoothVideoScale) * 0.12;
-                    
-                    const videoY = scaleProgress * -50;
-                    const rotation = Math.sin(morphPhase * Math.PI) * 0.5;
-                    const blur = overlayProgress * 4;
-                    
-                    videoWrapper.style.transform = `
-                        scale(${smoothVideoScale}) 
-                        translateY(${videoY}px) 
-                        rotateZ(${rotation}deg)
-                    `;
-                    video.style.filter = `blur(${blur}px) brightness(${1 - overlayProgress * 0.3})`;
-                    
-                    // Layer overlays for smooth fade
-                    const targetGradientOpacity = overlayProgress * 0.6;
-                    const targetOverlayOpacity = overlayProgress * 0.8;
-                    
-                    smoothGradientOpacity += (targetGradientOpacity - smoothGradientOpacity) * 0.1;
-                    smoothOverlayOpacity += (targetOverlayOpacity - smoothOverlayOpacity) * 0.08;
-                    
-                    gradientOverlay.style.opacity = smoothGradientOpacity;
-                    overlay.style.opacity = smoothOverlayOpacity;
-                    
-                    // Video container fade
-                    videoContainer.style.opacity = 1 - (overlayProgress * 0.6);
-                    
-                    // Activate content animations with smooth threshold
-                    if (contentProgress > 0.2) {
+                    if (videoScrollProgress > 0.65) {
                         content.classList.add('active');
-                    }
-                    
-                    // Progress bar visibility
-                    if (morphPhase > 0.8) {
                         progress.classList.add('hide');
                     } else {
+                        content.classList.remove('active');
                         progress.classList.remove('hide');
                     }
                 } else {
-                    // Reset morph values smoothly
-                    smoothVideoScale += (1 - smoothVideoScale) * 0.1;
-                    smoothOverlayOpacity *= 0.95;
-                    smoothGradientOpacity *= 0.95;
-                    smoothContentY += (100 - smoothContentY) * 0.1;
-                    
-                    videoWrapper.style.transform = `scale(${smoothVideoScale})`;
-                    video.style.filter = 'none';
-                    overlay.style.opacity = smoothOverlayOpacity;
-                    gradientOverlay.style.opacity = smoothGradientOpacity;
-                    content.style.transform = `translateY(${smoothContentY}vh)`;
-                    videoContainer.style.opacity = 1;
+                    overlay.style.opacity = 0;
+                    video.style.transform = 'scale(1)';
                     content.classList.remove('active');
                     progress.classList.remove('hide');
                 }
                 
                 animId = requestAnimationFrame(update);
             }
-            
             update();
         }
-
-        // Smooth scroll behavior
-        let scrollTimeout;
-        window.addEventListener('scroll', () => {
-            clearTimeout(scrollTimeout);
-            document.body.style.pointerEvents = 'none';
-            
-            scrollTimeout = setTimeout(() => {
-                document.body.style.pointerEvents = 'auto';
-            }, 150);
-        }, { passive: true });
 
         // Clean animations on unload
         window.addEventListener('beforeunload', () => {
