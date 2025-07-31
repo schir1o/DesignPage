@@ -101,7 +101,7 @@
 
         /* Video Section - Angepasst für einheitlichen Scroll */
         .video-section {
-            height: 100vh;
+            height: 400vh; /* Mehr Platz für Video-Animation */
             position: relative;
         }
 
@@ -159,7 +159,7 @@
             min-height: 100vh;
             background: var(--dark);
             z-index: 2;
-            padding-top: 100vh; /* Platz für Video-Animation */
+            /* Kein padding-top mehr - wird dynamisch gesteuert */
         }
 
         .content-wrapper {
@@ -170,6 +170,8 @@
             opacity: 0;
             transform: translateY(40px);
             transition: all 1.2s var(--easing-out);
+            position: relative;
+            z-index: 10;
         }
 
         .content-section.active .content-wrapper {
@@ -822,48 +824,54 @@
             let smoothVideoScale = 1;
             let smoothOverlayOpacity = 0;
             let smoothGradientOpacity = 0;
+            let contentTranslateY = 100;
 
+            const videoSection = document.querySelector('.video-section');
+            const videoSectionHeight = videoSection.offsetHeight;
             const windowHeight = window.innerHeight;
-            const totalScrollHeight = document.documentElement.scrollHeight - windowHeight;
 
             function update() {
                 const scrolled = window.pageYOffset;
+                const maxVideoScroll = videoSectionHeight - windowHeight;
                 
                 // Calculate scroll velocity for dynamic effects
                 scrollVelocity = scrolled - lastScrollY;
                 lastScrollY = scrolled;
                 
-                // Video phase: First viewport height of scroll
-                const videoPhaseProgress = Math.min(1, scrolled / windowHeight);
+                // Progress durch die Video-Section (0 bis 1)
+                const videoSectionProgress = Math.min(1, scrolled / maxVideoScroll);
                 
-                // Content phase: Everything after first viewport
-                const contentPhaseProgress = Math.max(0, (scrolled - windowHeight * 0.5) / (windowHeight * 0.5));
+                // Phasen definieren
+                const videoPhase = Math.min(1, videoSectionProgress / 0.65); // 0-65% für Video
+                const morphPhase = Math.max(0, (videoSectionProgress - 0.65) / 0.35); // 65-100% für Morph
                 
                 // Smooth transitions
-                smoothScrollProgress += (videoPhaseProgress - smoothScrollProgress) * 0.1;
+                smoothScrollProgress += (videoSectionProgress - smoothScrollProgress) * 0.1;
                 
                 // Update progress bar
+                const totalScrollHeight = document.documentElement.scrollHeight - windowHeight;
                 const totalProgress = scrolled / totalScrollHeight;
                 progressBar.style.width = `${totalProgress * 100}%`;
                 
-                // Video playback (0 to 100vh of scroll)
-                if (video.duration && videoPhaseProgress < 1) {
-                    const targetTime = videoPhaseProgress * video.duration;
+                // Video playback (erste 65% des Scrolls)
+                if (video.duration && videoPhase < 1) {
+                    const targetTime = videoPhase * video.duration;
                     smoothVideoTime += (targetTime - smoothVideoTime) * 0.12;
                     video.currentTime = smoothVideoTime;
                 }
                 
-                // Content appearance and video fade
-                if (contentPhaseProgress > 0) {
-                    // Video transforms
-                    const scaleProgress = easings.easeOutExpo(contentPhaseProgress);
-                    const overlayProgress = easings.easeInOutQuart(contentPhaseProgress);
+                // Morph-Phase (65% bis 100% des Video-Bereichs)
+                if (morphPhase > 0) {
+                    // Verschiedene Easings für verschiedene Eigenschaften
+                    const scaleProgress = easings.easeOutExpo(morphPhase);
+                    const overlayProgress = easings.easeInOutQuart(morphPhase);
                     
+                    // Video transforms
                     const targetScale = 1 + (scaleProgress * 0.2);
                     smoothVideoScale += (targetScale - smoothVideoScale) * 0.12;
                     
                     const videoY = scaleProgress * -50;
-                    const rotation = Math.sin(contentPhaseProgress * Math.PI) * 0.5;
+                    const rotation = Math.sin(morphPhase * Math.PI) * 0.5;
                     const blur = overlayProgress * 4;
                     
                     videoWrapper.style.transform = `
@@ -886,27 +894,40 @@
                     // Video container fade
                     videoContainer.style.opacity = 1 - (overlayProgress * 0.6);
                     
-                    // Activate content animations
-                    if (contentPhaseProgress > 0.2) {
-                        content.classList.add('active');
+                    // Content erscheint erst wenn Morph fast fertig ist
+                    if (morphPhase > 0.7) {
+                        const contentProgress = (morphPhase - 0.7) / 0.3;
+                        const targetY = 100 - (contentProgress * 100);
+                        contentTranslateY += (targetY - contentTranslateY) * 0.15;
+                        content.style.transform = `translateY(${contentTranslateY}vh)`;
+                        
+                        if (contentProgress > 0.3) {
+                            content.classList.add('active');
+                        }
+                    } else {
+                        contentTranslateY = 100;
+                        content.style.transform = `translateY(${contentTranslateY}vh)`;
+                        content.classList.remove('active');
                     }
                     
-                    // Hide video container completely when scrolled past
-                    if (contentPhaseProgress > 0.95) {
+                    // Video komplett ausblenden am Ende
+                    if (morphPhase > 0.95) {
                         videoContainer.style.display = 'none';
                     } else {
                         videoContainer.style.display = 'block';
                     }
                 } else {
-                    // Reset when scrolling back up
+                    // Reset wenn zurückgescrollt wird
                     smoothVideoScale += (1 - smoothVideoScale) * 0.1;
                     smoothOverlayOpacity *= 0.95;
                     smoothGradientOpacity *= 0.95;
+                    contentTranslateY = 100;
                     
                     videoWrapper.style.transform = `scale(${smoothVideoScale})`;
                     video.style.filter = 'none';
                     overlay.style.opacity = smoothOverlayOpacity;
                     gradientOverlay.style.opacity = smoothGradientOpacity;
+                    content.style.transform = `translateY(${contentTranslateY}vh)`;
                     videoContainer.style.opacity = 1;
                     videoContainer.style.display = 'block';
                     content.classList.remove('active');
