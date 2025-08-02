@@ -368,7 +368,7 @@
             </video>
             
             <!-- Placeholder wenn Video nicht lädt -->
-            <div class="video-placeholder">
+            <div class="video-placeholder" style="display: none;">
                 <p>
                     <strong>Video lädt...</strong><br><br>
                     Falls das Video nicht erscheint, überprüfen Sie Ihre Internetverbindung.
@@ -472,7 +472,6 @@
     // Video Setup with iOS fixes
     video.addEventListener('loadedmetadata', function() {
         videoReady = true;
-        loading.style.display = 'none';
         placeholder.style.display = 'none';
         console.log('Video geladen:', video.duration, 'Sekunden');
         
@@ -486,16 +485,12 @@
     video.addEventListener('error', function(e) {
         console.error('Video Fehler:', e);
         console.error('Video src:', video.currentSrc);
-        loading.style.display = 'none';
         placeholder.style.display = 'flex';
         
         // Debug info
         const debugInfo = `
-            <strong>Video Debug Info:</strong><br>
-            Pfad: ${video.currentSrc}<br>
-            Fehler: ${video.error ? video.error.code : 'Unbekannt'}<br>
-            ReadyState: ${video.readyState}<br>
-            NetworkState: ${video.networkState}
+            <strong>Video konnte nicht geladen werden</strong><br><br>
+            Bitte überprüfen Sie Ihre Internetverbindung und laden Sie die Seite neu.
         `;
         placeholder.innerHTML = '<p style="padding: 20px;">' + debugInfo + '</p>';
     });
@@ -520,12 +515,6 @@
             }
         }, { once: true });
     }
-    
-    // Show loading
-    video.addEventListener('loadstart', function() {
-        loading.style.display = 'block';
-        console.log('Video loading started...');
-    });
 
     // Optimized scroll handling
     let ticking = false;
