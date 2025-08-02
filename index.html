@@ -175,12 +175,16 @@
         .project-image {
             height: 280px;
             overflow: hidden;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .project-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             transition: transform 1s;
         }
 
@@ -258,7 +262,7 @@
     <section class="hero" id="about">
         <div class="hero-content">
             <h1>Hallo, ich bin<br>Sandra</h1>
-            <p class="subtitle">Transportdesigner</p>
+            <p class="subtitle">Transportdesignerin</p>
             <p>
                 Spezialisiert auf innovative Fahrzeugkonzepte und Mobilitätslösungen. 
                 Mit Leidenschaft für Ästhetik und Funktion gestalte ich die Zukunft der Mobilität.
@@ -279,7 +283,7 @@
         <div class="projects-grid">
             <article class="project-card" onclick="window.location.href='project-1.html'">
                 <div class="project-image">
-                    <img src="./images/cover-project-1.jpg" alt="Projekt 1">
+                    <img src="./images/cover-project-1.jpg" alt="Urban Mobility 2030">
                 </div>
                 <div class="project-info">
                     <div class="project-category">Konzeptfahrzeug</div>
@@ -358,7 +362,7 @@
     </section>
 
     <footer id="contact">
-        <p>© 2025 Sandra Dick |  Portfolio</p>
+        <p>© 2025 Sandra Dick | Transportdesign Portfolio</p>
     </footer>
 
     <script>
