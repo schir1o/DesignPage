@@ -1,618 +1,296 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automotive Design Portfolio</title>
+    <title>Scroll Video Demo</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --text-dim: #666;
-            --bg-dark: #0a0a0a;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000;
-            color: #fff;
-            overflow-x: hidden;
-        }
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #000;
+        color: #fff;
+        overflow-x: hidden;
+    }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #333; }
+    /* Start Section */
+    .intro {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        text-align: center;
+        padding: 20px;
+    }
 
-        /* Video Background */
-        .video-container {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            transition: filter 1s, transform 1s;
-        }
+    /* Animation Container */
+    .scroll-container {
+        position: relative;
+        height: 400vh; /* Länge bestimmt Video-Geschwindigkeit */
+    }
 
-        .video-container.morph {
-            filter: blur(20px) brightness(0.3);
-            transform: scale(1.1);
-        }
+    /* Sticky Wrapper */
+    .sticky-wrapper {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        video, .video-placeholder {
-            width: 100%;
-            height: 100vh;
-            object-fit: cover;
-        }
+    /* Video Container */
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+    }
 
-        .video-placeholder {
-            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-dim);
-            font-size: 1.5rem;
-            text-align: center;
-        }
+    /* Video Element */
+    #scroll-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: cover;
+    }
 
-        /* Layout */
-        .scroll-content {
-            position: relative;
-            z-index: 1;
-        }
+    /* Placeholder wenn kein Video */
+    .video-placeholder {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #1a1a1a;
+        border: 2px dashed #444;
+    }
 
-        .scroll-section {
-            height: 100vh;
-        }
+    .video-placeholder p {
+        text-align: center;
+        color: #666;
+        max-width: 400px;
+        padding: 20px;
+    }
 
-        .main-content {
-            position: relative;
-            background: #000;
-            min-height: 100vh;
-            z-index: 10;
-            margin-top: -100vh;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 1s ease;
-        }
+    /* Content Container */
+    .content-container {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        background: #111;
+        padding: 50px;
+        transition: opacity 0.6s ease;
+    }
 
-        .main-content.active {
-            opacity: 1;
-            visibility: visible;
-        }
+    .content-wrapper {
+        text-align: center;
+        max-width: 800px;
+    }
 
-        .content-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 8rem 4rem;
-            opacity: 0;
-            transform: translateY(60px);
-            transition: all 1s ease;
-        }
+    .content-wrapper h2 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
 
-        .main-content.active .content-wrapper {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    /* Show content */
+    .show-content .content-container {
+        opacity: 1;
+        pointer-events: auto;
+    }
 
-        /* Typography */
-        .subtitle {
-            font-size: 0.875rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 2rem;
-        }
+    .show-content #scroll-video,
+    .show-content .video-placeholder {
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
 
-        h1 {
-            font-size: clamp(3rem, 8vw, 7rem);
-            font-weight: 300;
-            line-height: 0.9;
-            letter-spacing: -0.02em;
-            margin-bottom: 3rem;
-        }
+    /* Next Section */
+    .next-section {
+        min-height: 100vh;
+        background: #1a1a1a;
+        padding: 100px 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
 
-        h1 strong { font-weight: 700; }
+    /* Progress */
+    .progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: #6366f1;
+        width: 0%;
+        z-index: 100;
+        transition: width 0.1s;
+    }
 
-        .lead {
-            font-size: 1.25rem;
-            line-height: 1.6;
-            color: var(--text-dim);
-            max-width: 600px;
-            margin-bottom: 6rem;
-        }
+    /* Loading indicator */
+    .loading {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(99, 102, 241, 0.9);
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        z-index: 200;
+        display: none;
+    }
+</style>
+```
 
-        h2 {
-            font-size: 3rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Grid Layouts */
-        .grid {
-            display: grid;
-            gap: 4rem;
-            margin: 8rem 0;
-        }
-
-        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-
-        /* Project Card */
-        .project {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s ease;
-            cursor: pointer;
-        }
-
-        .main-content.active .project {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .main-content.active .project:nth-child(1) { transition-delay: 0.4s; }
-        .main-content.active .project:nth-child(2) { transition-delay: 0.5s; }
-        .main-content.active .project:nth-child(3) { transition-delay: 0.6s; }
-        .main-content.active .project:nth-child(4) { transition-delay: 0.7s; }
-
-        .image-container {
-            position: relative;
-            padding-bottom: 75%;
-            margin-bottom: 2rem;
-            overflow: hidden;
-            background: var(--bg-dark);
-            border-radius: 8px;
-        }
-
-        .image-container img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 1s ease;
-        }
-
-        .project:hover img { transform: scale(1.05); }
-
-        .arrow-icon {
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            background: rgba(255,255,255,0.9);
-            color: #000;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: var(--transition);
-        }
-
-        .project:hover .arrow-icon {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .project p { color: var(--text-dim); }
-
-        /* About Section */
-        .about {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            align-items: center;
-            gap: 6rem;
-        }
-
-        .about-text p {
-            font-size: 1.125rem;
-            line-height: 1.8;
-            color: var(--text-dim);
-        }
-
-        .about .image-container {
-            height: 500px;
-            padding-bottom: 0;
-        }
-
-        /* Modal/Lightbox */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            position: relative;
-            max-width: 90vw;
-            max-height: 90vh;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-
-        .modal.active .modal-content { transform: scale(1); }
-
-        .modal img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        /* Modal Controls */
-        .modal-btn {
-            position: absolute;
-            width: 3rem;
-            height: 3rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .modal-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .modal-close {
-            top: 2rem;
-            right: 2rem;
-        }
-
-        .modal-close:hover { transform: rotate(90deg); }
-
-        .modal-close::before,
-        .modal-close::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 2px;
-            background: #fff;
-        }
-
-        .modal-close::before { transform: rotate(45deg); }
-        .modal-close::after { transform: rotate(-45deg); }
-
-        .modal-nav {
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5rem;
-        }
-
-        .modal-prev { left: 2rem; }
-        .modal-next { right: 2rem; }
-
-        .modal-info {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            color: #fff;
-        }
-
-        .modal-info p { color: var(--text-dim); }
-
-        /* UI Elements */
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            z-index: 100;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #fff;
-            width: 0%;
-            transition: width 0.1s;
-        }
-
-        .instructions {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            opacity: 0.6;
-            transition: opacity 0.3s;
-        }
-
-        .instructions.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Page Transition */
-        body {
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        body.loaded {
-            opacity: 1;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 { font-size: 3rem; }
-            .grid { gap: 3rem; }
-            .content-wrapper { padding: 4rem 2rem; }
-            .modal-nav { display: none; }
-        }
-    </style>
 </head>
 <body>
-    <div class="progress-bar">
-        <div class="progress-fill"></div>
-    </div>
+    <div class="progress"></div>
+    <div class="loading">Video lädt...</div>
 
-    <div class="video-container">
-        <video muted preload="auto">
-            <source src="video/car_open-2.mp4" type="video/mp4">
-        </video>
-        <div class="video-placeholder">
-            <div>
-                <p>Video wird geladen...</p>
-                <p style="font-size: 0.875rem; margin-top: 1rem;">Automotive Design Concept</p>
+```
+<section class="intro">
+    <div>
+        <h1>↓ Scrollen Sie nach unten ↓</h1>
+        <p style="margin-top: 20px; font-size: 1rem; opacity: 0.7;">
+            Auto-Öffnungs-Animation beim Scrollen
+        </p>
+    </div>
+</section>
+
+<section class="scroll-container">
+    <div class="sticky-wrapper">
+        <div class="video-container">
+            <!-- Ihr Video hier -->
+            <video id="scroll-video" muted preload="auto">
+                <source src="video/car_open-2.mp4" type="video/mp4">
+                <!-- Weitere Formate für bessere Kompatibilität -->
+                <source src="video/car_open-2.webm" type="video/webm">
+            </video>
+            
+            <!-- Placeholder wenn Video nicht lädt -->
+            <div class="video-placeholder">
+                <p>
+                    <strong>Video Placeholder</strong><br><br>
+                    Ersetzen Sie "video.mp4" mit dem Pfad zu Ihrem Video.<br><br>
+                    Tipps:<br>
+                    • Kurze Videos (5-10 Sek.) funktionieren am besten<br>
+                    • MP4 oder WebM Format<br>
+                    • Komprimiert für Web (unter 10MB)
+                </p>
+            </div>
+        </div>
+        
+        <div class="content-container">
+            <div class="content-wrapper">
+                <h2>Einsteigen!</h2>
+                <p>
+                    Das Auto hat sich geöffnet und lädt Sie ein.
+                    Perfekt für automobile Präsentationen oder Showrooms!
+                </p>
             </div>
         </div>
     </div>
+</section>
 
-    <div class="scroll-content">
-        <div class="scroll-section"></div>
-        <div class="scroll-section"></div>
-        <div class="scroll-section"></div>
-        <div class="scroll-section"></div>
+<section class="next-section">
+    <div>
+        <h2>Weitere Inhalte</h2>
+        <p>Ihre Webseite geht hier normal weiter.</p>
     </div>
+</section>
 
-    <div class="main-content">
-        <div class="content-wrapper">
-            <p class="subtitle">Portfolio 2025</p>
-            <h1>Automotive<br><strong>Design</strong></h1>
-            <p class="lead">
-                Konzeptionelle Fahrzeugstudien an der Schnittstelle 
-                von Technologie und Ästhetik.
-            </p>
+<script>
+    const video = document.getElementById('scroll-video');
+    const scrollContainer = document.querySelector('.scroll-container');
+    const stickyWrapper = document.querySelector('.sticky-wrapper');
+    const progress = document.querySelector('.progress');
+    const loading = document.querySelector('.loading');
+    const placeholder = document.querySelector('.video-placeholder');
+    
+    let videoReady = false;
 
-            <div class="grid grid-2">
-                <div class="project" data-project='{"title":"Concept Alpha","desc":"Elektrischer Sportwagen","img":"https://images.unsplash.com/photo-1600712242805-5f78671b24da?w=1200&h=900&fit=crop"}'>
-                    <div class="image-container">
-                        <img src="https://images.unsplash.com/photo-1600712242805-5f78671b24da?w=1200&h=900&fit=crop" alt="Concept Alpha">
-                        <div class="arrow-icon">→</div>
-                    </div>
-                    <h3>Concept Alpha</h3>
-                    <p>Elektrischer Sportwagen</p>
-                </div>
-                <div class="project" data-project='{"title":"Urban Mobility","desc":"Autonomes Stadtfahrzeug","img":"https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1200&h=900&fit=crop"}'>
-                    <div class="image-container">
-                        <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1200&h=900&fit=crop" alt="Urban Mobility">
-                        <div class="arrow-icon">→</div>
-                    </div>
-                    <h3>Urban Mobility</h3>
-                    <p>Autonomes Stadtfahrzeug</p>
-                </div>
-                <div class="project" data-project='{"title":"Luxury Transport","desc":"Premium Limousine","img":"https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=1200&h=900&fit=crop"}'>
-                    <div class="image-container">
-                        <img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=1200&h=900&fit=crop" alt="Luxury Transport">
-                        <div class="arrow-icon">→</div>
-                    </div>
-                    <h3>Luxury Transport</h3>
-                    <p>Premium Limousine</p>
-                </div>
-                <div class="project" data-project='{"title":"Future Vision","desc":"Konzeptstudie 2030","img":"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&h=900&fit=crop"}'>
-                    <div class="image-container">
-                        <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&h=900&fit=crop" alt="Future Vision">
-                        <div class="arrow-icon">→</div>
-                    </div>
-                    <h3>Future Vision</h3>
-                    <p>Konzeptstudie 2030</p>
-                </div>
-            </div>
+    // Video Setup
+    video.addEventListener('loadedmetadata', function() {
+        videoReady = true;
+        loading.style.display = 'none';
+        placeholder.style.display = 'none';
+        console.log('Video duration:', video.duration, 'seconds');
+    });
 
-            <div class="grid about">
-                <div class="about-text">
-                    <h2>Über das Projekt</h2>
-                    <p>
-                        Spezialisiert auf die Entwicklung visionärer Fahrzeugkonzepte, 
-                        die nachhaltige Technologien mit zeitlosem Design verbinden. 
-                        Jedes Projekt beginnt mit einer tiefgreifenden Analyse zukünftiger 
-                        Mobilitätsbedürfnisse und mündet in durchdachte Designlösungen.
-                    </p>
-                </div>
-                <div class="image-container">
-                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&h=500&fit=crop" alt="Design Process">
-                </div>
-            </div>
-        </div>
-    </div>
+    video.addEventListener('error', function() {
+        console.log('Video konnte nicht geladen werden');
+        loading.style.display = 'none';
+        placeholder.style.display = 'flex';
+    });
 
-    <div class="modal">
-        <div class="modal-btn modal-close"></div>
-        <div class="modal-btn modal-nav modal-prev">‹</div>
-        <div class="modal-btn modal-nav modal-next">›</div>
-        <div class="modal-content">
-            <img src="" alt="">
-            <div class="modal-info">
-                <h3></h3>
-                <p></p>
-            </div>
-        </div>
-    </div>
+    // Show loading
+    video.addEventListener('loadstart', function() {
+        loading.style.display = 'block';
+    });
 
-    <div class="instructions">Scroll</div>
-
-    <script>
-        // Page load animation
-        window.addEventListener('load', () => {
-            document.body.classList.add('loaded');
-        });
-
-        // DOM Elements
-        const $ = (s) => document.querySelector(s);
-        const $$ = (s) => document.querySelectorAll(s);
+    // Scroll handler
+    window.addEventListener('scroll', () => {
+        const containerTop = scrollContainer.offsetTop;
+        const containerHeight = scrollContainer.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const scrolled = window.scrollY;
         
-        const els = {
-            video: $('video'),
-            progress: $('.progress-fill'),
-            main: $('.main-content'),
-            videoContainer: $('.video-container'),
-            instructions: $('.instructions'),
-            placeholder: $('.video-placeholder'),
-            modal: $('.modal'),
-            modalImg: $('.modal img'),
-            modalTitle: $('.modal-info h3'),
-            modalDesc: $('.modal-info p'),
-            projects: $$('.project')
-        };
+        let scrollProgress = (scrolled - containerTop) / (containerHeight - windowHeight);
+        scrollProgress = Math.max(0, Math.min(1, scrollProgress));
         
-        // State
-        const state = {
-            currentProject: 0,
-            targetTime: 0,
-            currentTime: 0,
-            isTransitioned: false,
-            videoLoaded: false,
-            animationId: null
-        };
+        // Progress bar
+        progress.style.width = `${scrollProgress * 100}%`;
         
-        // Project Modal
-        const projectData = Array.from(els.projects).map(p => JSON.parse(p.dataset.project));
-        
-        const openModal = (index) => {
-            state.currentProject = index;
-            const data = projectData[index];
-            els.modalImg.src = data.img;
-            els.modalTitle.textContent = data.title;
-            els.modalDesc.textContent = data.desc;
-            els.modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        };
-        
-        const closeModal = () => {
-            els.modal.classList.remove('active');
-            document.body.style.overflow = '';
-        };
-        
-        const navigateModal = (dir) => {
-            state.currentProject = (state.currentProject + dir + projectData.length) % projectData.length;
-            openModal(state.currentProject);
-        };
-        
-        // Event Listeners
-        els.projects.forEach((p, i) => p.addEventListener('click', () => openModal(i)));
-        $('.modal-close').addEventListener('click', closeModal);
-        $('.modal-prev').addEventListener('click', () => navigateModal(-1));
-        $('.modal-next').addEventListener('click', () => navigateModal(1));
-        els.modal.addEventListener('click', (e) => e.target === els.modal && closeModal());
-        
-        document.addEventListener('keydown', (e) => {
-            if (!els.modal.classList.contains('active')) return;
-            const actions = {
-                'Escape': closeModal,
-                'ArrowLeft': () => navigateModal(-1),
-                'ArrowRight': () => navigateModal(1)
-            };
-            actions[e.key]?.();
-        });
-        
-        // Video Scroll
-        const setVideoTime = (time) => {
-            if (!els.video?.duration || !isFinite(els.video.duration)) return;
-            const clampedTime = Math.max(0, Math.min(time, els.video.duration - 0.1));
-            if (isFinite(clampedTime)) {
-                try { els.video.currentTime = clampedTime; } catch(e) {}
+        if (scrollProgress > 0 && scrollProgress <= 1 && videoReady) {
+            // Video bis 90% abspielen
+            if (scrollProgress <= 0.9) {
+                stickyWrapper.classList.remove('show-content');
+                
+                // Video-Zeit basierend auf Scroll
+                const videoProgress = scrollProgress / 0.9;
+                video.currentTime = video.duration * videoProgress;
             }
-        };
-        
-        const handleScroll = () => {
-            const scrollY = window.pageYOffset;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollPercent = Math.min(Math.max(scrollY / maxScroll, 0), 1);
-            
-            els.progress.style.width = `${scrollPercent * 100}%`;
-            
-            if (state.videoLoaded && els.video.duration) {
-                state.targetTime = els.video.duration * scrollPercent;
+            // Bei 90% zum Content wechseln
+            else {
+                stickyWrapper.classList.add('show-content');
             }
-            
-            const shouldTransition = scrollY > window.innerHeight * 2.5;
-            if (shouldTransition !== state.isTransitioned) {
-                state.isTransitioned = shouldTransition;
-                els.videoContainer.classList.toggle('morph', shouldTransition);
-                els.main.classList.toggle('active', shouldTransition);
-            }
-            
-            els.instructions.classList.toggle('hidden', scrollY > 50);
-        };
-        
-        const animate = () => {
-            if (state.videoLoaded && els.video.duration && !isNaN(state.targetTime)) {
-                const diff = state.targetTime - state.currentTime;
-                state.currentTime += diff * 0.1;
-                if (Math.abs(diff) > 0.01) setVideoTime(state.currentTime);
-            }
-            state.animationId = requestAnimationFrame(animate);
-        };
-        
-        const initScrollHandler = () => {
-            window.addEventListener('scroll', handleScroll);
-            if (state.videoLoaded) animate();
-        };
-        
-        // Video Events
-        els.video.addEventListener('loadedmetadata', () => {
-            state.videoLoaded = true;
-            els.placeholder.style.display = 'none';
-            setVideoTime(0);
-            initScrollHandler();
-        });
-        
-        els.video.addEventListener('error', () => {
-            els.placeholder.innerHTML = '<div><p>Video konnte nicht geladen werden</p><p style="font-size: 0.875rem; margin-top: 1rem;">Bitte überprüfen Sie den Pfad: video/car_open-2.mp4</p></div>';
-        });
-        
-        setTimeout(() => {
-            if (!state.videoLoaded) {
-                els.placeholder.innerHTML = '<div><p>Demo-Modus ohne Video</p></div>';
-                initScrollHandler();
-            }
-        }, 5000);
-        
-        els.video.pause();
-        
-        window.addEventListener('beforeunload', () => {
-            if (state.animationId) cancelAnimationFrame(state.animationId);
-        });
-    </script>
+        }
+    });
+
+    // Optional: Frame-by-Frame für smoothere Wiedergabe
+    function updateVideoTime() {
+        if (videoReady && video.paused) {
+            video.play().then(() => {
+                video.pause();
+            }).catch(e => console.log('Autoplay prevented'));
+        }
+        requestAnimationFrame(updateVideoTime);
+    }
+    
+    // Start frame updates
+    updateVideoTime();
+</script>
+```
+
 </body>
 </html>
