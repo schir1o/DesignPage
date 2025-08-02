@@ -97,6 +97,14 @@
             animation: fadeInUp 0.8s ease 0.4s both;
         }
 
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
         .cta-button {
             display: inline-block;
             padding: 1rem 2rem;
@@ -105,13 +113,27 @@
             color: #fff;
             letter-spacing: 0.05em;
             transition: all 0.3s;
-            animation: fadeInUp 0.8s ease 0.6s both;
+            position: relative;
+            overflow: hidden;
         }
 
         .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .cta-button.primary {
             background: #fff;
             color: #000;
-            transform: translateY(-2px);
+        }
+
+        .cta-button.primary:hover {
+            background: transparent;
+            color: #fff;
+        }
+
+        .cta-button.secondary:hover {
+            background: #fff;
+            color: #000;
         }
 
         .hero-image {
@@ -126,11 +148,169 @@
             filter: grayscale(0.2);
         }
 
+        /* CV Section */
+        .cv-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cv-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .cv-header h2 {
+            font-size: 3rem;
+            font-weight: 200;
+            margin-bottom: 1rem;
+        }
+
+        .cv-header p {
+            font-size: 1.125rem;
+            color: var(--text-dim);
+        }
+
+        .cv-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .cv-column h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .cv-item {
+            margin-bottom: 2.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .cv-item:hover {
+            border-left-color: #fff;
+        }
+
+        .cv-date {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .cv-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .cv-subtitle {
+            color: #ccc;
+            margin-bottom: 0.75rem;
+        }
+
+        .cv-description {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* Skills Section */
+        .skills-section {
+            margin-top: 4rem;
+        }
+
+        .skills-section h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-category {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .skill-category:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .skill-category h4 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .skill-list li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #fff;
+        }
+
+        /* Download CV Button */
+        .cv-download {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+        }
+
         /* Projects Section */
         .projects {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 6rem 2rem;
         }
 
         .section-header {
@@ -243,7 +423,24 @@
             }
             .hero-content { order: 2; }
             .hero-image { order: 1; }
-            .projects-grid { grid-template-columns: 1fr; }
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            .cta-button {
+                width: 100%;
+                text-align: center;
+            }
+            .cv-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            .projects-grid { 
+                grid-template-columns: 1fr; 
+            }
         }
     </style>
 </head>
@@ -253,6 +450,7 @@
             <div class="logo">TRANSPORTDESIGN</div>
             <ul class="nav-links">
                 <li><a href="#about">Über mich</a></li>
+                <li><a href="#cv">Lebenslauf</a></li>
                 <li><a href="#projects">Projekte</a></li>
                 <li><a href="#contact">Kontakt</a></li>
             </ul>
@@ -267,10 +465,149 @@
                 Spezialisiert auf innovative Fahrzeugkonzepte und Mobilitätslösungen. 
                 Mit Leidenschaft für Ästhetik und Funktion gestalte ich die Zukunft der Mobilität.
             </p>
-            <a href="#projects" class="cta-button">MEINE PROJEKTE</a>
+            <div class="button-group">
+                <a href="#cv" class="cta-button primary">LEBENSLAUF</a>
+                <a href="#projects" class="cta-button secondary">MEINE PROJEKTE</a>
+            </div>
         </div>
         <div class="hero-image">
             <img src="./images/profil-picture.png" alt="Profilbild">
+        </div>
+    </section>
+
+    <section class="cv-section" id="cv">
+        <div class="cv-header">
+            <h2>Lebenslauf</h2>
+            <p>Mein Werdegang im Bereich Transportdesign</p>
+        </div>
+
+        <div class="cv-content">
+            <div class="cv-column">
+                <h3>Ausbildung</h3>
+                
+                <div class="cv-item">
+                    <div class="cv-date">2018 - 2022</div>
+                    <div class="cv-title">Bachelor of Arts - Transportation Design</div>
+                    <div class="cv-subtitle">Hochschule für Gestaltung Pforzheim</div>
+                    <div class="cv-description">
+                        Schwerpunkte: Fahrzeugdesign, CAD-Modellierung, Ergonomie, 
+                        Designtheorie und nachhaltige Mobilitätskonzepte
+                    </div>
+                </div>
+                
+                <div class="cv-item">
+                    <div class="cv-date">2022 - 2024</div>
+                    <div class="cv-title">Master of Arts - Automotive Design</div>
+                    <div class="cv-subtitle">Royal College of Art, London</div>
+                    <div class="cv-description">
+                        Fokus auf zukunftsweisende Mobilitätslösungen, autonome 
+                        Fahrzeuge und User Experience Design
+                    </div>
+                </div>
+
+                <div class="cv-item">
+                    <div class="cv-date">2020</div>
+                    <div class="cv-title">Auslandssemester</div>
+                    <div class="cv-subtitle">Art Center College of Design, Pasadena</div>
+                    <div class="cv-description">
+                        Vertiefung in Advanced Transportation Design und 
+                        Entertainment Design
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cv-column">
+                <h3>Berufserfahrung</h3>
+                
+                <div class="cv-item">
+                    <div class="cv-date">2024 - heute</div>
+                    <div class="cv-title">Senior Automotive Designer</div>
+                    <div class="cv-subtitle">Future Mobility GmbH, Stuttgart</div>
+                    <div class="cv-description">
+                        Leitung von Konzeptentwicklungen für elektrische und autonome 
+                        Fahrzeuge, Teamführung und Kundenpräsentationen
+                    </div>
+                </div>
+                
+                <div class="cv-item">
+                    <div class="cv-date">2022 - 2024</div>
+                    <div class="cv-title">Junior Transportation Designer</div>
+                    <div class="cv-subtitle">Automotive Innovation Lab, München</div>
+                    <div class="cv-description">
+                        Mitarbeit an Zukunftsstudien, Prototypenentwicklung und 
+                        Gestaltung von Interior-Konzepten
+                    </div>
+                </div>
+                
+                <div class="cv-item">
+                    <div class="cv-date">2021</div>
+                    <div class="cv-title">Design Praktikum</div>
+                    <div class="cv-subtitle">Mercedes-Benz Design Center</div>
+                    <div class="cv-description">
+                        Interior Design für Luxusfahrzeuge, User Interface Konzepte 
+                        und Materialstudien
+                    </div>
+                </div>
+
+                <div class="cv-item">
+                    <div class="cv-date">2020</div>
+                    <div class="cv-title">Werkstudentin</div>
+                    <div class="cv-subtitle">Porsche Design Studio</div>
+                    <div class="cv-description">
+                        Unterstützung bei Exterior-Designprojekten und 
+                        Visualisierungen
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="skills-section">
+            <h3>Kompetenzen</h3>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h4>Design Software</h4>
+                    <ul class="skill-list">
+                        <li>Alias/Autodesk</li>
+                        <li>CATIA V5/V6</li>
+                        <li>Rhino 3D + Grasshopper</li>
+                        <li>Blender</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h4>Visualisierung</h4>
+                    <ul class="skill-list">
+                        <li>KeyShot</li>
+                        <li>V-Ray</li>
+                        <li>Adobe Creative Suite</li>
+                        <li>Substance Painter</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h4>Prototyping</h4>
+                    <ul class="skill-list">
+                        <li>Clay Modeling</li>
+                        <li>3D-Druck</li>
+                        <li>VR/AR Prototyping</li>
+                        <li>Sketch & Rendering</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h4>Weitere</h4>
+                    <ul class="skill-list">
+                        <li>UI/UX Design</li>
+                        <li>Projektmanagement</li>
+                        <li>Präsentation</li>
+                        <li>Englisch (fließend)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="cv-download">
+            <a href="./files/lebenslauf-sandra-dick.pdf" class="download-btn" download>
+                <span>Download CV als PDF</span>
+                <span>↓</span>
+            </a>
         </div>
     </section>
 
@@ -370,9 +707,13 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
 
@@ -386,11 +727,20 @@
             });
         }, { threshold: 0.1 });
 
+        // Animate project cards
         document.querySelectorAll('.project-card').forEach(card => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
             card.style.transition = 'all 0.6s ease';
             observer.observe(card);
+        });
+
+        // Animate CV items
+        document.querySelectorAll('.cv-item, .skill-category').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'all 0.6s ease';
+            observer.observe(item);
         });
     </script>
 </body>
