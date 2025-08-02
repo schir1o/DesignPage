@@ -181,7 +181,7 @@
     <div class="sticky-wrapper">
         <div class="video-container">
             <!-- Ihr Video hier -->
-            <video id="scroll-video" muted preload="auto">
+            <video id="scroll-video" muted preload="auto" playsinline webkit-playsinline>
                 <source src="video/car_open-2.mp4" type="video/mp4">
                 <!-- Weitere Formate für bessere Kompatibilität -->
                 <source src="video/car_open-2.webm" type="video/webm">
@@ -248,12 +248,15 @@
         loading.style.display = 'block';
     });
 
-    // Scroll handler
-    window.addEventListener('scroll', () => {
+    // Optimized scroll handling
+    let ticking = false;
+    let lastKnownScrollPosition = 0;
+    
+    function updateVideoOnScroll() {
         const containerTop = scrollContainer.offsetTop;
         const containerHeight = scrollContainer.offsetHeight;
         const windowHeight = window.innerHeight;
-        const scrolled = window.scrollY;
+        const scrolled = lastKnownScrollPosition;
         
         let scrollProgress = (scrolled - containerTop) / (containerHeight - windowHeight);
         scrollProgress = Math.max(0, Math.min(1, scrollProgress));
@@ -266,29 +269,42 @@
             if (scrollProgress <= 0.9) {
                 stickyWrapper.classList.remove('show-content');
                 
-                // Video-Zeit basierend auf Scroll
+                // Smooth video time update
                 const videoProgress = scrollProgress / 0.9;
-                video.currentTime = video.duration * videoProgress;
+                const targetTime = video.duration * videoProgress;
+                
+                // Nur updaten wenn Unterschied groß genug
+                if (Math.abs(video.currentTime - targetTime) > 0.1) {
+                    video.currentTime = targetTime;
+                }
             }
             // Bei 90% zum Content wechseln
             else {
                 stickyWrapper.classList.add('show-content');
             }
         }
-    });
-
-    // Optional: Frame-by-Frame für smoothere Wiedergabe
-    function updateVideoTime() {
-        if (videoReady && video.paused) {
-            video.play().then(() => {
-                video.pause();
-            }).catch(e => console.log('Autoplay prevented'));
-        }
-        requestAnimationFrame(updateVideoTime);
+        
+        ticking = false;
     }
     
-    // Start frame updates
-    updateVideoTime();
+    // Throttled scroll handler
+    window.addEventListener('scroll', () => {
+        lastKnownScrollPosition = window.scrollY;
+        
+        if (!ticking) {
+            window.requestAnimationFrame(updateVideoOnScroll);
+            ticking = true;
+        }
+    });
+    
+    // Safari-specific fixes
+    if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+        video.addEventListener('loadeddata', function() {
+            // Force Safari to preload frames
+            video.currentTime = 0.1;
+            video.currentTime = 0;
+        });
+    }
 </script>
 ```
 
