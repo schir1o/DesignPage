@@ -57,7 +57,7 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        background: #000;
+        background: #1a1a1a; /* Dunkelgrau statt schwarz */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -71,29 +71,32 @@
         transform: translate(-50%, -50%);
         width: 100%;
         height: 100%;
-        object-fit: contain; /* Geändert von cover zu contain für Mobile */
+        object-fit: cover; /* Immer cover für vollflächige Darstellung */
         /* iOS specific fixes */
         -webkit-transform: translate(-50%, -50%);
         -webkit-backface-visibility: hidden;
         -webkit-perspective: 1000;
     }
     
-    /* Desktop: Video füllt Bildschirm */
-    @media (min-width: 768px) {
+    /* Mobile Portrait: Video größer machen um Balken zu vermeiden */
+    @media (max-width: 767px) and (orientation: portrait) {
         #scroll-video {
-            object-fit: cover;
+            width: auto;
+            height: auto;
+            min-width: 100%;
+            min-height: 100%;
+            /* Für 16:9 Videos auf 9:16 Screens */
+            width: 177.77vh; /* 16/9 * 100vh */
+            height: 100vh;
         }
     }
     
-    /* Mobile: Video passt sich an */
-    @media (max-width: 767px) {
+    /* Mobile Landscape */
+    @media (max-width: 767px) and (orientation: landscape) {
         #scroll-video {
-            object-fit: contain;
-            background: #000;
-        }
-        
-        .video-container {
-            background: #000;
+            width: 100%;
+            height: auto;
+            min-height: 100%;
         }
     }
 
