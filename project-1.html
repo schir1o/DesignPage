@@ -55,6 +55,9 @@
         height: 100%;
         overflow: hidden;
         background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Video Element */
@@ -68,6 +71,10 @@
         width: auto;
         height: auto;
         object-fit: cover;
+        /* iOS specific fixes */
+        -webkit-transform: translate(-50%, -50%);
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
     }
 
     /* Placeholder wenn kein Video */
@@ -358,9 +365,9 @@
         <div class="video-container">
             <!-- Ihr Video hier -->
             <video id="scroll-video" muted preload="auto" playsinline webkit-playsinline x-webkit-airplay="deny">
-                <source src="video/car_open-2.mp4" type="video/mp4">
-                <!-- Weitere Formate für bessere Kompatibilität -->
-                <source src="video/car_open-2.webm" type="video/webm">
+                <source src="/DesignPage/video/car_open-2.mp4" type="video/mp4">
+                <!-- Fallback für relative Pfade -->
+                <source src="./video/car_open-2.mp4" type="video/mp4">
             </video>
             
             <!-- Placeholder wenn Video nicht lädt -->
@@ -469,23 +476,62 @@
     
     let videoReady = false;
 
-    // Video Setup
+    // Video Setup with iOS fixes
     video.addEventListener('loadedmetadata', function() {
         videoReady = true;
         loading.style.display = 'none';
         placeholder.style.display = 'none';
-        console.log('Video duration:', video.duration, 'seconds');
+        console.log('Video geladen:', video.duration, 'Sekunden');
+        
+        // iOS Safari Fix: Force video to be ready
+        video.play().then(() => {
+            video.pause();
+            video.currentTime = 0;
+        }).catch(e => console.log('Autoplay blocked:', e));
     });
 
-    video.addEventListener('error', function() {
-        console.log('Video konnte nicht geladen werden');
+    video.addEventListener('error', function(e) {
+        console.error('Video Fehler:', e);
+        console.error('Video src:', video.currentSrc);
         loading.style.display = 'none';
         placeholder.style.display = 'flex';
+        
+        // Debug info
+        const debugInfo = `
+            <strong>Video Debug Info:</strong><br>
+            Pfad: ${video.currentSrc}<br>
+            Fehler: ${video.error ? video.error.code : 'Unbekannt'}<br>
+            ReadyState: ${video.readyState}<br>
+            NetworkState: ${video.networkState}
+        `;
+        placeholder.innerHTML = '<p style="padding: 20px;">' + debugInfo + '</p>';
     });
 
+    // iOS/Safari Detection and Special Handling
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    if (isIOS || isSafari) {
+        console.log('iOS/Safari detected - applying special video handling');
+        
+        // Preload hack for iOS
+        video.load();
+        
+        // Touch event to enable video on iOS
+        document.addEventListener('touchstart', function() {
+            if (!videoReady && video.paused) {
+                video.play().then(() => {
+                    video.pause();
+                    console.log('Video activated via touch');
+                }).catch(e => console.log('Touch activation failed:', e));
+            }
+        }, { once: true });
+    }
+    
     // Show loading
     video.addEventListener('loadstart', function() {
         loading.style.display = 'block';
+        console.log('Video loading started...');
     });
 
     // Optimized scroll handling
