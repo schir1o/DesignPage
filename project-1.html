@@ -15,7 +15,7 @@
 ```
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background: #000;
+        background: #1a1a1a;
         color: #fff;
         overflow-x: hidden;
     }
@@ -134,7 +134,7 @@
     /* Features Section */
     .features-section {
         padding: 100px 0;
-        background: #0a0a0a;
+        background: #222;
     }
 
     .section-title {
@@ -163,8 +163,8 @@
     }
 
     .feature-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 20px;
         padding: 40px;
         text-align: center;
@@ -188,14 +188,15 @@
     }
 
     .feature-card p {
-        opacity: 0.8;
+        opacity: 0.9;
         line-height: 1.6;
+        color: #ddd;
     }
 
     /* Stats Section */
     .stats-section {
         padding: 80px 0;
-        background: #111;
+        background: #2a2a2a;
     }
 
     .stats-grid {
@@ -222,7 +223,7 @@
     /* CTA Section */
     .cta-section {
         padding: 100px 0;
-        background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+        background: linear-gradient(135deg, #333 0%, #222 100%);
         text-align: center;
     }
 
@@ -356,7 +357,7 @@
     <div class="sticky-wrapper">
         <div class="video-container">
             <!-- Ihr Video hier -->
-            <video id="scroll-video" muted preload="auto" playsinline webkit-playsinline>
+            <video id="scroll-video" muted preload="auto" playsinline webkit-playsinline x-webkit-airplay="deny">
                 <source src="video/car_open-2.mp4" type="video/mp4">
                 <!-- Weitere Formate für bessere Kompatibilität -->
                 <source src="video/car_open-2.webm" type="video/webm">
