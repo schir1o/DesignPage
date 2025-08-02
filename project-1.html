@@ -124,15 +124,190 @@
         transition: opacity 0.6s ease;
     }
 
-    /* Next Section */
-    .next-section {
-        min-height: 100vh;
-        background: #1a1a1a;
-        padding: 100px 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 100px 0;
+        background: #0a0a0a;
+    }
+
+    .section-title {
+        font-size: 3rem;
         text-align: center;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #fff 0%, #6366f1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        opacity: 0.7;
+        margin-bottom: 60px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: #6366f1;
+        background: rgba(99, 102, 241, 0.05);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .feature-card p {
+        opacity: 0.8;
+        line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 80px 0;
+        background: #111;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+        text-align: center;
+    }
+
+    .stat h3 {
+        font-size: 3.5rem;
+        color: #6366f1;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .stat p {
+        font-size: 1.1rem;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 100px 0;
+        background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        opacity: 0.8;
+        margin-bottom: 40px;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 15px 40px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #6366f1;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #5558e3;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: #6366f1;
+        border: 2px solid #6366f1;
+    }
+
+    .btn-secondary:hover {
+        background: #6366f1;
+        color: white;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 40px 0;
+        background: #000;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer p {
+        opacity: 0.5;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+        
+        .features-grid,
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
     }
 
     /* Progress */
@@ -212,12 +387,76 @@
     </div>
 </section>
 
-<section class="next-section">
-    <div>
-        <h2>Weitere Inhalte</h2>
-        <p>Ihre Webseite geht hier normal weiter.</p>
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Die Zukunft des Fahrens</h2>
+        <p class="section-subtitle">Entdecken Sie revolutionäre Technologie und zeitloses Design</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Elektrische Kraft</h3>
+                <p>0-100 km/h in 3,2 Sekunden. Reichweite bis zu 600km mit einer einzigen Ladung.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Autopilot</h3>
+                <p>Fortschrittliche Fahrassistenz für sicheres und entspanntes Reisen.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🌟</div>
+                <h3>Premium Interieur</h3>
+                <p>Handgefertigte Details und nachhaltige Materialien für ultimativen Komfort.</p>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat">
+                <h3>600km</h3>
+                <p>Reichweite</p>
+            </div>
+            <div class="stat">
+                <h3>15min</h3>
+                <p>Schnellladung</p>
+            </div>
+            <div class="stat">
+                <h3>5★</h3>
+                <p>Sicherheit</p>
+            </div>
+            <div class="stat">
+                <h3>∞</h3>
+                <p>Updates</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Bereit für Ihre Probefahrt?</h2>
+        <p>Erleben Sie die Zukunft der Mobilität hautnah</p>
+        <div class="cta-buttons">
+            <a href="#" class="btn btn-primary">Probefahrt buchen</a>
+            <a href="#" class="btn btn-secondary">Konfigurator starten</a>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2024 Future Mobility. Alle Rechte vorbehalten.</p>
+    </div>
+</footer>
 
 <script>
     const video = document.getElementById('scroll-video');
